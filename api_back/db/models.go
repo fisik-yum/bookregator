@@ -14,11 +14,12 @@ type Isbn struct {
 }
 
 type Review struct {
-	ReviewID int64
-	Olid     string
-	Source   string
-	Rating   sql.NullFloat64
-	Text     sql.NullString
+	ReviewID   int64
+	Olid       string
+	Source     string
+	ExternalID string
+	Rating     sql.NullFloat64
+	Text       sql.NullString
 }
 
 type Work struct {

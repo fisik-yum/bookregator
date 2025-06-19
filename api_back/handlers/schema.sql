@@ -15,6 +15,8 @@ CREATE TABLE reviews (
   review_id INTEGER PRIMARY KEY AUTOINCREMENT,
   olid TEXT NOT NULL REFERENCES works(olid),
   source TEXT NOT NULL,
+  external_id TEXT NOT NULL,
   rating REAL,
-  text TEXT
+  text TEXT,
+  UNIQUE(olid, source, external_id, text)
 );

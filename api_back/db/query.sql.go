@@ -7,10 +7,11 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 const getReviewsByOLID = `-- name: GetReviewsByOLID :many
-SELECT review_id, olid, source, rating, text FROM reviews WHERE olid = ?
+SELECT review_id, olid, source, external_id, rating, text FROM reviews WHERE olid = ?
 `
 
 func (q *Queries) GetReviewsByOLID(ctx context.Context, olid string) ([]Review, error) {
@@ -26,6 +27,7 @@ func (q *Queries) GetReviewsByOLID(ctx context.Context, olid string) ([]Review, 
 			&i.ReviewID,
 			&i.Olid,
 			&i.Source,
+			&i.ExternalID,
 			&i.Rating,
 			&i.Text,
 		); err != nil {
@@ -53,5 +55,30 @@ type InsertISBNParams struct {
 
 func (q *Queries) InsertISBN(ctx context.Context, arg InsertISBNParams) error {
 	_, err := q.db.ExecContext(ctx, insertISBN, arg.Isbn, arg.Olid)
+	return err
+}
+
+const insertReview = `-- name: InsertReview :exec
+INSERT INTO reviews (review_id, olid, source, external_id, rating, text) values (?, ?, ?, ?, ?, ?)
+`
+
+type InsertReviewParams struct {
+	ReviewID   int64
+	Olid       string
+	Source     string
+	ExternalID string
+	Rating     sql.NullFloat64
+	Text       sql.NullString
+}
+
+func (q *Queries) InsertReview(ctx context.Context, arg InsertReviewParams) error {
+	_, err := q.db.ExecContext(ctx, insertReview,
+		arg.ReviewID,
+		arg.Olid,
+		arg.Source,
+		arg.ExternalID,
+		arg.Rating,
+		arg.Text,
+	)
 	return err
 }

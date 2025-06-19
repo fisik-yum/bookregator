@@ -5,11 +5,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	_ "git.sr.ht/~timharek/openlibrary-go"
 	gisbn "github.com/moraes/isbn"
 )
 
+/*
+Extract ISBN, and auto-routes it. Requires URL form to have the fields "isbn"
+and "olid". ISBNs can be ISBN10 or ISBN13.
+Example: endpoint?isbn=123456790?olid=123456
+*/
 func RouteHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -18,16 +24,33 @@ func RouteHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	isbn := r.Form.Get("isbn")
 	if isbn == "" {
-		log.Println("No ISBN in request URL")
+		fmt.Fprintln(w, "No ISBN in request URL")
 		return
 	}
-	if routeISBNtoOLID(isbn) {
-		fmt.Fprintln(w, "Review ingested successfully")
+	olid := r.Form.Get("olid")
+	if olid == "" {
+		fmt.Fprintln(w, "No OLID in request URL")
+		return
+	}
+	if routeISBNtoOLID(isbn, olid) {
+		fmt.Fprintf(w, "Success: Route %s to %s\n", isbn, olid)
+		log.Printf("Success: Route %s to %s", isbn, olid)
 	} else {
-		fmt.Fprintln(w, "Review ingested unsuccessfully")
+		fmt.Fprintf(w, "Fail: Route %s to %s\n", isbn, olid)
+		log.Printf("Fail: Route %s to %s", isbn, olid)
 	}
 }
-func routeISBNtoOLID(isbn string) bool {
+
+/*
+Patches ISBN to an OLID and adds it to the database. Performs only input
+validation, not verifications. That is is done on the client side.
+*/
+func routeISBNtoOLID(isbn string, olid string) bool {
+	// TODO: Add other sanitizing steps to the scraper layer
+	// Remove spaces and dashes
+	isbn = strings.ReplaceAll(strings.Trim(isbn, " \n\r"), "-", "")
+	olid = strings.ReplaceAll(strings.Trim(olid, " \n\r"), "-", "")
+
 	if !gisbn.Validate(isbn) {
 		log.Printf("Invalid ISBN: %s", isbn)
 		return false
@@ -35,34 +58,15 @@ func routeISBNtoOLID(isbn string) bool {
 	if len(isbn) < 11 && len(isbn) > 8 {
 		isbn, _ = gisbn.To13(isbn)
 	}
-	//
-	book, err := olib.Book.ByISBN(isbn)
-	if err != nil {
-		log.Printf("Book %s lookup error: %s", isbn, err)
-		return false
-	}
-	olid := book.Key // HACK: Assume that this is the correct OLID for the works
-	if olid == "" {
-		log.Printf("ISBN %s has no corresponding OLID", isbn)
-		return false
-	}
 
-	/*_, err = db.Exec(`
-	      INSERT OR IGNORE INTO isbns (isbn, olid)
-	      VALUES (?, ?)
-	  `, isbn, olid)
-	*/
 	queries := db.New(database)
-	err = queries.InsertISBN(ctx, db.InsertISBNParams{
+	err := queries.InsertISBN(ctx, db.InsertISBNParams{
 		Isbn: isbn,
 		Olid: olid,
 	})
 
 	if err != nil {
-		log.Println("DB insert failed:", err)
 		return false
 	}
-
-	log.Printf("DB insert suceeded: %s", olid)
 	return true
 }
