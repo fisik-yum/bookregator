@@ -1,18 +1,20 @@
 package handlers
 
 import (
+	"api_back/db"
 	"context"
 	"database/sql"
-	 _"embed"
-	"git.sr.ht/~timharek/openlibrary-go"
-	_ "github.com/mattn/go-sqlite3"
+	_ "embed"
 	"log"
 	"time"
+
+	"git.sr.ht/~timharek/openlibrary-go"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var olib openlibrary.Client
 var database *sql.DB
-var ctx = context.Background()
+var queries db.Queries
 
 //go:embed schema.sql
 var scheme string
@@ -33,6 +35,8 @@ func init() {
 	database.SetConnMaxLifetime(time.Minute * 3)
 	database.SetMaxOpenConns(10)
 	database.SetMaxIdleConns(10)
-	//
-	database.ExecContext(ctx, scheme)
+	// initialize
+	database.ExecContext(context.Background(), scheme)
+	queries = *db.New(database)
+
 }

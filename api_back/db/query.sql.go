@@ -49,8 +49,8 @@ INSERT INTO isbns (isbn, olid) VALUES (?, ?)
 `
 
 type InsertISBNParams struct {
-	Isbn string
-	Olid string
+	Isbn string `json:"isbn"`
+	Olid string `json:"olid"`
 }
 
 func (q *Queries) InsertISBN(ctx context.Context, arg InsertISBNParams) error {
@@ -63,12 +63,12 @@ INSERT INTO reviews (review_id, olid, source, external_id, rating, text) values 
 `
 
 type InsertReviewParams struct {
-	ReviewID   int64
-	Olid       string
-	Source     string
-	ExternalID string
-	Rating     sql.NullFloat64
-	Text       sql.NullString
+	ReviewID   int64           `json:"review_id"`
+	Olid       string          `json:"olid"`
+	Source     string          `json:"source"`
+	ExternalID string          `json:"external_id"`
+	Rating     sql.NullFloat64 `json:"rating"`
+	Text       sql.NullString  `json:"text"`
 }
 
 func (q *Queries) InsertReview(ctx context.Context, arg InsertReviewParams) error {

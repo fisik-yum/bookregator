@@ -16,11 +16,12 @@ Extract ISBN, and auto-routes it. Requires URL form to have the fields "isbn"
 and "olid". ISBNs can be ISBN10 or ISBN13.
 Example: endpoint?isbn=123456790?olid=123456
 */
-func RouteHandler(w http.ResponseWriter, r *http.Request) {
+func InsertRouteHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
+	// prep data
 	r.ParseForm()
 	isbn := r.Form.Get("isbn")
 	if isbn == "" {
@@ -32,7 +33,7 @@ func RouteHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "No OLID in request URL")
 		return
 	}
-	if routeISBNtoOLID(isbn, olid) {
+	if routeISBNtoOLID(isbn, olid, r) {
 		fmt.Fprintf(w, "Success: Route %s to %s\n", isbn, olid)
 		log.Printf("Success: Route %s to %s", isbn, olid)
 	} else {
@@ -45,7 +46,7 @@ func RouteHandler(w http.ResponseWriter, r *http.Request) {
 Patches ISBN to an OLID and adds it to the database. Performs only input
 validation, not verifications. That is is done on the client side.
 */
-func routeISBNtoOLID(isbn string, olid string) bool {
+func routeISBNtoOLID(isbn string, olid string, r *http.Request) bool {
 	// TODO: Add other sanitizing steps to the scraper layer
 	// Remove spaces and dashes
 	isbn = strings.ReplaceAll(strings.Trim(isbn, " \n\r"), "-", "")
@@ -58,8 +59,8 @@ func routeISBNtoOLID(isbn string, olid string) bool {
 	if len(isbn) < 11 && len(isbn) > 8 {
 		isbn, _ = gisbn.To13(isbn)
 	}
-
-	queries := db.New(database)
+	// get context
+	ctx := r.Context()
 	err := queries.InsertISBN(ctx, db.InsertISBNParams{
 		Isbn: isbn,
 		Olid: olid,

@@ -9,23 +9,23 @@ import (
 )
 
 type Isbn struct {
-	Isbn string
-	Olid string
+	Isbn string `json:"isbn"`
+	Olid string `json:"olid"`
 }
 
 type Review struct {
-	ReviewID   int64
-	Olid       string
-	Source     string
-	ExternalID string
-	Rating     sql.NullFloat64
-	Text       sql.NullString
+	ReviewID   int64           `json:"review_id"`
+	Olid       string          `json:"olid"`
+	Source     string          `json:"source"`
+	ExternalID string          `json:"external_id"`
+	Rating     sql.NullFloat64 `json:"rating"`
+	Text       sql.NullString  `json:"text"`
 }
 
 type Work struct {
-	Olid          string
-	Title         string
-	Author        sql.NullString
-	Description   sql.NullString
-	PublishedYear sql.NullInt64
+	Olid          string         `json:"olid"`
+	Title         string         `json:"title"`
+	Author        sql.NullString `json:"author"`
+	Description   sql.NullString `json:"description"`
+	PublishedYear sql.NullInt64  `json:"published_year"`
 }

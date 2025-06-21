@@ -7,7 +7,9 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/route", handlers.RouteHandler)
+	http.HandleFunc("/api/insert/route", handlers.InsertRouteHandler)
+	http.HandleFunc("/api/insert/reviewsingle", handlers.InsertReviewSingleHandler)
+	http.HandleFunc("/api/insert/reviewmultiple", handlers.InsertReviewMultipleHandler)
 	// Bind only to localhost (127.0.0.1)
 	addr := "127.0.0.1:8080"
 	log.Printf("Ingestion API listening on %s", addr)
