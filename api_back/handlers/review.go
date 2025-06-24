@@ -1,5 +1,5 @@
 package handlers
-
+// TODO: Better logging
 import (
 	"api_back/db"
 	"encoding/json"

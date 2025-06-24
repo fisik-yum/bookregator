@@ -7,15 +7,23 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/api/insert/route", handlers.InsertRouteHandler)
-	http.HandleFunc("/api/insert/reviewsingle", handlers.InsertReviewSingleHandler)
-	http.HandleFunc("/api/insert/reviewmultiple", handlers.InsertReviewMultipleHandler)
+	mux := http.NewServeMux()
+	// register
+	mux.HandleFunc("/api/insert/route", handlers.InsertRouteHandler)
+	mux.HandleFunc("/api/insert/reviewsingle", handlers.InsertReviewSingleHandler)
+	mux.HandleFunc("/api/insert/reviewmultiple", handlers.InsertReviewMultipleHandler)
+	mux.HandleFunc("/api/insert/work", handlers.InsertWorkHandler)
+
+	// Function to log request paths
+	loggingFn := func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("API: %s", r.URL.Path)
+		mux.ServeHTTP(w, r)
+	}
+
 	// Bind only to localhost (127.0.0.1)
 	addr := "127.0.0.1:8080"
 	log.Printf("Ingestion API listening on %s", addr)
-	if err := http.ListenAndServe(addr, nil); err != nil {
+	if err := http.ListenAndServe(addr, http.HandlerFunc(loggingFn)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
-
-
