@@ -16,7 +16,7 @@ func main() {
 
 	// Function to log request paths
 	loggingFn := func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("API: %s", r.URL.Path)
+		log.Printf("%s: %s", r.Method, r.URL.Path)
 		mux.ServeHTTP(w, r)
 	}
 

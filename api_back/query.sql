@@ -5,7 +5,7 @@ INSERT INTO isbns (isbn, olid) VALUES (?, ?);
 SELECT * FROM reviews WHERE olid = ?;
 
 -- name: InsertReview :exec
-INSERT INTO reviews (review_id, olid, source, external_id, rating, text) values (?, ?, ?, ?, ?, ?);
+INSERT INTO reviews ( olid, source, external_id, username, rating, text) values (?, ?, ?, ?, ?, ?);
 
 -- name: InsertWork :exec
 INSERT INTO works (olid, title, author, description, published_year) values (?, ?, ?, ?, ?)

@@ -11,7 +11,7 @@ import (
 )
 
 const getReviewsByOLID = `-- name: GetReviewsByOLID :many
-SELECT review_id, olid, source, external_id, rating, text FROM reviews WHERE olid = ?
+SELECT review_id, olid, source, external_id, username, rating, text FROM reviews WHERE olid = ?
 `
 
 func (q *Queries) GetReviewsByOLID(ctx context.Context, olid string) ([]Review, error) {
@@ -28,6 +28,7 @@ func (q *Queries) GetReviewsByOLID(ctx context.Context, olid string) ([]Review, 
 			&i.Olid,
 			&i.Source,
 			&i.ExternalID,
+			&i.Username,
 			&i.Rating,
 			&i.Text,
 		); err != nil {
@@ -59,24 +60,24 @@ func (q *Queries) InsertISBN(ctx context.Context, arg InsertISBNParams) error {
 }
 
 const insertReview = `-- name: InsertReview :exec
-INSERT INTO reviews (review_id, olid, source, external_id, rating, text) values (?, ?, ?, ?, ?, ?)
+INSERT INTO reviews ( olid, source, external_id, username, rating, text) values (?, ?, ?, ?, ?, ?)
 `
 
 type InsertReviewParams struct {
-	ReviewID   int64           `json:"review_id"`
 	Olid       string          `json:"olid"`
 	Source     string          `json:"source"`
 	ExternalID string          `json:"external_id"`
+	Username   string          `json:"username"`
 	Rating     sql.NullFloat64 `json:"rating"`
 	Text       sql.NullString  `json:"text"`
 }
 
 func (q *Queries) InsertReview(ctx context.Context, arg InsertReviewParams) error {
 	_, err := q.db.ExecContext(ctx, insertReview,
-		arg.ReviewID,
 		arg.Olid,
 		arg.Source,
 		arg.ExternalID,
+		arg.Username,
 		arg.Rating,
 		arg.Text,
 	)

@@ -16,6 +16,7 @@ CREATE TABLE reviews (
   olid TEXT NOT NULL REFERENCES works(olid),
   source TEXT NOT NULL,
   external_id TEXT NOT NULL,
+  username TEXT NOT NULL,
   rating REAL,
   text TEXT,
   UNIQUE(olid, source, external_id, text)

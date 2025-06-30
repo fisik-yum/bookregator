@@ -18,6 +18,7 @@ type Review struct {
 	Olid       string          `json:"olid"`
 	Source     string          `json:"source"`
 	ExternalID string          `json:"external_id"`
+	Username   string          `json:"username"`
 	Rating     sql.NullFloat64 `json:"rating"`
 	Text       sql.NullString  `json:"text"`
 }
