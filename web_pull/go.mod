@@ -3,6 +3,7 @@ module web_pull
 go 1.24.4
 
 require (
+	git.sr.ht/~timharek/openlibrary-go v0.0.0 // indirect
 	github.com/PuerkitoBio/goquery v1.10.3 // indirect
 	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/antchfx/htmlquery v1.3.4 // indirect

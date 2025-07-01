@@ -27,7 +27,7 @@ type ItemizedReview struct {
 
 // NOTE: assign OLID as-is
 func (g GoodreadsScraper) GetReviews(isbn string) ([]sources.ItemizedReview, error) {
-	var reviews []sources.ItemizedReview
+	var reviews = make([]sources.ItemizedReview,0)
 	reviewCollector := colly.NewCollector(
 		colly.AllowedDomains("www.goodreads.com"),
 	)
@@ -46,6 +46,7 @@ func (g GoodreadsScraper) GetReviews(isbn string) ([]sources.ItemizedReview, err
 		val, err:=strconv.ParseFloat(strings.SplitN(rating_str, " ", 3)[1],64)
 		if err!=nil{
 			log.Fatal(err)
+			return
 		}
 		review.Rating=val
 		// Get GR Review ID ?ex https://www.goodreads.com/review/show/
