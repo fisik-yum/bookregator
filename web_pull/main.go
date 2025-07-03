@@ -1,14 +1,20 @@
 package main
 
 import (
-	gr "web_pull/sources/goodreads"
-	hc"web_pull/sources/hardcover"
+	"flag"
+	"fmt"
 	"web_pull/sources"
+
+	//bwb "web_pull/sources/betterworldbooks"
+	gr "web_pull/sources/goodreads"
+	//"web_pull/sources/librarything"
 )
 
-var SCRAPE_SOURCES=[2]sources.Source{gr.GoodreadsScraper{},hc.HardcoverScraper{}}
+var SCRAPE_SOURCES = []sources.Source{gr.GoodreadsScraper{}}
 
-func main(){
-	//h,_:=gr.GoodreadsScraper{}.GetReviews("9781439550410")
-	//fmt.Println(h[0].Rating)
+func main() {
+	isbn := "9780446310789"
+	for _, v := range SCRAPE_SOURCES {
+		fmt.Println(v.GetReviews(isbn))
+	}
 }
