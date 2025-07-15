@@ -1,7 +1,8 @@
 package handlers
 // TODO: Better logging
 import (
-	"api_back/db"
+	"api_back/internal/db"
+	"api_back/internal"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -27,7 +28,7 @@ func InsertReviewSingleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.Unmarshal(body, review)
-	err = queries.InsertReview(ctx, *review)
+	err = internal.Queries.InsertReview(ctx, *review)
 	if err != nil {
 		log.Println(err)
 		fmt.Fprintf(w, "DB Write Failed")
@@ -55,7 +56,7 @@ func InsertReviewMultipleHandler(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(body, &reviews)
 
 	// Start a transaction
-	tx, err := database.Begin()
+	tx, err := internal.Database.Begin()
 	if err != nil {
 		log.Println(err)
 		fmt.Fprintf(w, "DB Txn start failed")
@@ -63,7 +64,7 @@ func InsertReviewMultipleHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Rollback()
 
-	qtx := queries.WithTx(tx)
+	qtx := internal.Queries.WithTx(tx)
 	for _, review := range reviews {
 		qtx.InsertReview(ctx, review)
 	}

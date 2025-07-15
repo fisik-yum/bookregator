@@ -1,7 +1,8 @@
 package handlers
 
 import (
-	"api_back/db"
+	"api_back/internal"
+	"api_back/internal/db"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -19,12 +20,11 @@ func InsertWorkHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "JSON Read Failed")
 		return
 	}
-
 	val := new(db.InsertWorkParams)
 	json.Unmarshal(raw, val)
 
 	// write to DB
-	err = queries.InsertWork(ctx, *val)
+	err = internal.Queries.InsertWork(ctx, *val)
 	if err != nil {
 		log.Println(err)
 		fmt.Fprintf(w, "DB Write Failed")

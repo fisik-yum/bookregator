@@ -1,7 +1,8 @@
 package handlers
 
 import (
-	"api_back/db"
+	"api_back/internal"
+	"api_back/internal/db"
 	"fmt"
 	"log"
 	"net/http"
@@ -61,7 +62,7 @@ func routeISBNtoOLID(isbn string, olid string, r *http.Request) bool {
 	}
 	// get context
 	ctx := r.Context()
-	err := queries.InsertISBN(ctx, db.InsertISBNParams{
+	err := internal.Queries.InsertISBN(ctx, db.InsertISBNParams{
 		Isbn: isbn,
 		Olid: olid,
 	})
