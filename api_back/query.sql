@@ -8,7 +8,7 @@ INSERT INTO reviews ( olid, source, external_id, username, rating, text) values 
 INSERT INTO works (olid, title, author, description, published_year) values (?, ?, ?, ?, ?);
 
 -- name: GetNReviewsByOLID :many
-SELECT * FROM reviews WHERE olid = ? ORDER BY RAND() LIMIT ?;
+SELECT * FROM reviews WHERE olid = ? ORDER BY RANDOM() LIMIT ?;
 
 -- name: GetOLIDFromISBN :one
 SELECT olid FROM isbns WHERE isbn = ? LIMIT 1;

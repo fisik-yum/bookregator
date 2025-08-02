@@ -11,7 +11,7 @@ import (
 )
 
 const getNReviewsByOLID = `-- name: GetNReviewsByOLID :many
-SELECT review_id, olid, source, external_id, username, rating, text FROM reviews WHERE olid = ? ORDER BY RAND() LIMIT ?
+SELECT review_id, olid, source, external_id, username, rating, text FROM reviews WHERE olid = ? ORDER BY RANDOM() LIMIT ?
 `
 
 type GetNReviewsByOLIDParams struct {

@@ -42,6 +42,7 @@ func GetReviewsHandler(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		log.Printf("Review Request for OLID: %s failed", olid)
+		log.Println(err)
 	}
 	for _,rs:=range reviews{
 		w.Write([]byte(rs.Text.String))

@@ -2,7 +2,7 @@ from abc import abstractmethod
 from selenium.webdriver.common.by import By
 import undetected_chromedriver as uc
 import bs4
-from undetected_chromedriver.cdp import PageElement
+from undetected_chromedriver.cdp import PageElement, requests
 import time
 driver = uc.Chrome(use_subprocess=False)
 
@@ -123,5 +123,12 @@ class LTScraper(Scraper):
 
         return []
 def main():
-    print(len(LTScraper().getReviews("9780142410349")))
+    print("Getting reviews")
+    revs=GRScraper().getReviews("9780375822070")
+    print(f"# of reviews: {len(revs)}")
+    print("posting reviews")
+    for review in revs:
+        review.olid="OL45804"
+
+        requests.post("http://127.0.0.1:1024/api/insert/reviewsingle", json=review.asJSON())
 main()
