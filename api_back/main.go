@@ -13,6 +13,7 @@ func main() {
 	mux.HandleFunc("/api/insert/reviewsingle", handlers.InsertReviewSingleHandler)
 	mux.HandleFunc("/api/insert/reviewmultiple", handlers.InsertReviewMultipleHandler)
 	mux.HandleFunc("/api/insert/work", handlers.InsertWorkHandler)
+	mux.HandleFunc("/api/get/work", handlers.GetReviewsHandler)
 
 	// Function to log request paths
 	loggingFn := func(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +22,7 @@ func main() {
 	}
 
 	// Bind only to localhost (127.0.0.1)
-	addr := "127.0.0.1:8080"
+	addr := "127.0.0.1:1024"
 	log.Printf("Ingestion API listening on %s", addr)
 	if err := http.ListenAndServe(addr, http.HandlerFunc(loggingFn)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

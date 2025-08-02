@@ -31,3 +31,20 @@ func InsertWorkHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+// get book reviews
+func GetReviewsHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	olid := r.Form.Get("olid")
+	reviews, err := internal.Queries.GetNReviewsByOLID(r.Context(), db.GetNReviewsByOLIDParams{
+		Olid:  olid,
+		Limit: 7,
+	})
+	if err != nil {
+		log.Printf("Review Request for OLID: %s failed", olid)
+	}
+	for _,rs:=range reviews{
+		w.Write([]byte(rs.Text.String))
+		w.Write([]byte("\n"))
+	}
+}
