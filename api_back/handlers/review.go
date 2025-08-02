@@ -1,14 +1,25 @@
 package handlers
+
 // TODO: Better logging
 import (
-	"api_back/internal/db"
 	"api_back/internal"
+	"api_back/internal/db"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 )
+
+type internalReviewParams struct {
+	Olid       string  `json:"olid"`
+	Source     string  `json:"source"`
+	ExternalID string  `json:"external_id"`
+	Username   string  `json:"username"`
+	Rating     float64 `json:"rating"`
+	Text       string  `json:"text"`
+}
 
 // Single review insert mechanism
 func InsertReviewSingleHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +30,7 @@ func InsertReviewSingleHandler(w http.ResponseWriter, r *http.Request) {
 	// get context
 	ctx := r.Context()
 	// prep data
-	review := new(db.InsertReviewParams)
+	review := new(internalReviewParams)
 	defer r.Body.Close()
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -28,11 +39,20 @@ func InsertReviewSingleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.Unmarshal(body, review)
-	err = internal.Queries.InsertReview(ctx, *review)
+	extrrev := db.InsertReviewParams{
+		Olid:       review.Olid,
+		Source:     review.Source,
+		ExternalID: review.ExternalID,
+		Username:   review.Username,
+		Rating:     sql.NullFloat64{Float64: (review.Rating), Valid: true},
+		Text:       sql.NullString{String: review.Text, Valid: true},
+	}
+	err = internal.Queries.InsertReview(ctx, extrrev)
 	if err != nil {
 		log.Println(err)
 		fmt.Fprintf(w, "DB Write Failed")
 	}
+	log.Printf("Review for Book %s; User %s inserted", review.Olid, review.Username)
 }
 
 // Multiple review insert mechanism
