@@ -10,17 +10,18 @@ import (
 //go:embed head.embed
 var HTML_IMPORTS_HEAD string
 
+//go:embed tail.embed
+var HTML_IMPORTS_TAIL string
+
 func Navbar() g.Node {
-	return Nav(Class("navbar navbar-default"),
+	return Nav(Class("navbar navbar-expand navbar-light bg-light"),
 		Div(Class("container-fluid"),
-			Div(Class("navbar-header"),
-				A(Class("navbar-brand"),
-					g.Text("bookregator"),
-				),
+			A(Class("navbar-brand"),
+				g.Text("bookregator"),
 			),
 			// NOTE: include navbar stuff *inside* this ul tag
 			Div(Class("collapse navbar-collapse"),
-				Ul(Class("nav navbar-nav"),
+				Ul(Class("navbar-nav me-auto mb-2 mb-lg-0"),
 					NavbarLink("Home", "/"),
 					NavbarLink("About", "/about"),
 					SearchBarOLID(),
@@ -31,16 +32,24 @@ func Navbar() g.Node {
 }
 
 func NavbarLink(name, path string) g.Node {
-	return Li(A(Href(path), g.Text(name)))
+	return Li(Class("nav-item"),
+		A(Class("nav-link"),
+			Href(path),
+			g.Text(name),
+		),
+	)
 }
 
 func SearchBarOLID() g.Node {
-	return Form(Class("navbar-form navbar-right"),
-		Div(Class("form-group"),
-			Input(Type("text"), Class("form-control"), Placeholder("Search OLID")),
+	return Form(Class("d-flex"),
+		Input(Class("form-control me-2"),
+			Type("search"),
+			Placeholder("Search OLID"),
 		),
-		Button(Type("submit"), Class("btn btn-default"),
-			g.Text("Submit"),
+		Button(Class("btn btn-outline-success"),
+			Type("submit"),
+			// TODO: add glyph
+			g.Text("Search"),
 		),
 	)
 }
@@ -57,6 +66,7 @@ func Page(title string, nodes ...g.Node) g.Node {
 		Head: []g.Node{
 			g.Raw(HTML_IMPORTS_HEAD),
 		},
-		Body: append(head, nodes...),
+		// TODO: figure out better way to do this
+		Body: append(head, append(nodes, g.Raw(HTML_IMPORTS_TAIL))...),
 	})
 }
