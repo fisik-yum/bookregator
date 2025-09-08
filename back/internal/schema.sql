@@ -2,6 +2,7 @@ CREATE TABLE works (
   olid TEXT PRIMARY KEY,
   title TEXT NOT NULL,
   author TEXT,
+  cover TEXT,
   description TEXT,
   published_year INTEGER
 );

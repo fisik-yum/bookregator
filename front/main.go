@@ -10,6 +10,7 @@ func main() {
 	mux := http.NewServeMux()
 	// register
 	mux.HandleFunc("/bookregator/olid", handlers.ByOLID)
+	mux.HandleFunc("/", handlers.Home)
 
 	// Function to log request paths
 	loggingFn := func(w http.ResponseWriter, r *http.Request) {
