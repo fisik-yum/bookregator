@@ -2,7 +2,13 @@ import bs4
 from selenium.webdriver.common.by import By
 import undetected_chromedriver as uc
 import time
+import coloredlogs
+import logging
 from . import data
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+coloredlogs.install()
 
 
 class GRScraper(data.Scraper):
@@ -15,6 +21,9 @@ class GRScraper(data.Scraper):
     @staticmethod
     def getReviews(isbn: str, driver: uc.Chrome) -> list[data.ReviewData]:
         ret: list[data.ReviewData] = []
+        logger = logging.getLogger(__name__)
+
+        logger.debug(f"Fetching details for {isbn}")
         driver.get(GRScraper.url+isbn)
         # skip the GR sign-in pop-up
         time.sleep(2)
@@ -29,24 +38,29 @@ class GRScraper(data.Scraper):
         soup = bs4.BeautifulSoup(
             driver.page_source, features="html.parser")
         cards = soup.select(".ReviewCard")
-        # print(len(cards))
-        for card in cards:
-            # username
+        # logger.debug(len(cards))
+        for i in range(len(cards)):
+            logger.debug(f"Working on review {i} for {isbn}")
+            card = cards[i]
+            # user
             eusername = card.select_one(".ReviewerProfile__name")
             if eusername:
                 name = eusername.text
             else:
+                logger.critical(f"{isbn}: No username element")
                 continue
 
-            # review text
+            # text content
             etextA = card.select_one(".ReviewCard__content")
             if etextA:
                 etextB = etextA.select_one("span.Formatted")
                 if etextB:
                     text = etextB.text
                 else:
+                    logger.critical(f"{isbn}: No review span")
                     continue
             else:
+                logger.critical(f"{isbn}: No review element")
                 continue
 
             # rating
@@ -60,11 +74,13 @@ class GRScraper(data.Scraper):
                     if eratingC:
                         rating = str(eratingC).split(" ")[1]
                     else:
+                        logger.critical(f"{isbn}: Invalid rating attribute")
                         continue
                 else:
+                    logger.warn(f"{isbn}: No rating span")
                     continue
             else:
-                print("rating stage 1 not found")
+                logger.warn(f"{isbn}: No rating element")
                 continue
 
             # external id
@@ -80,12 +96,15 @@ class GRScraper(data.Scraper):
                         except Exception:
                             continue
                     else:
+                        logger.critical(
+                            f"{isbn}: No external ID attribute")
                         continue
                 else:
+                    logger.critical(f"{isbn}: No external ID anchor")
                     continue
             else:
+                logger.critical(f"{isbn}: No external ID span element")
                 continue
-            # append
             ret.append(data.ReviewData("", GRScraper.source,
                        eid, name, rating, text))
         return ret
