@@ -27,15 +27,15 @@ func Review(review common.Review) g.Node {
 	)
 }
 
-func bookInfo(olid string) *common.Review {
-	book, err := internal.BookClient.Book.ById(olid + "W")
-	if err != nil {
-		return nil
-	}
-	ret:=&common.Review{
-
-	}
-}
+//func bookInfo(olid string) *common.Review {
+//	book, err := internal.BookClient.Book.ById(olid + "W")
+//	if err != nil {
+//		return nil
+//	}
+//	ret:=&common.Review{
+//
+//	}
+//}
 
 func getReviews(olid string) []common.Review {
 	resp, err := internal.Client.Get("http://127.0.0.1:1024/api/get/work?olid=" + olid)
@@ -59,8 +59,8 @@ func getReviews(olid string) []common.Review {
 }
 
 func ReviewPage(olid string) g.Node {
-	book := BookInfo(olid)
+	//book := BookInfo(olid)
 	reviewNodes := g.Map(getReviews(olid), Review)
-	pageContent := []g.Node{book, reviewNodes}
+	pageContent := []g.Node{reviewNodes}
 	return Page("", pageContent...)
 }
