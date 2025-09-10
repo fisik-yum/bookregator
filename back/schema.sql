@@ -3,8 +3,7 @@ CREATE TABLE works (
   title TEXT NOT NULL,
   author TEXT,
   cover TEXT,
-  description TEXT,
-  published_year INTEGER
+  description TEXT
 );
 
 CREATE TABLE isbns (

@@ -20,10 +20,9 @@ type Review struct {
 }
 
 type Work struct {
-	Olid          string  `json:"olid"`
-	Title         string  `json:"title"`
-	Author        *string `json:"author"`
-	Cover         *string `json:"cover"`
-	Description   *string `json:"description"`
-	PublishedYear *int64  `json:"published_year"`
+	Olid        string  `json:"olid"`
+	Title       string  `json:"title"`
+	Author      *string `json:"author"`
+	Cover       *string `json:"cover"`
+	Description *string `json:"description"`
 }

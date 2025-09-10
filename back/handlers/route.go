@@ -3,69 +3,66 @@ package handlers
 import (
 	"api_back/internal"
 	"api_back/internal/db"
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"strings"
+
+	"encoding/json"
+	"io"
 
 	_ "git.sr.ht/~timharek/openlibrary-go"
 	gisbn "github.com/moraes/isbn"
 )
 
 /*
-Extract ISBN, and auto-routes it. Requires URL form to have the fields "isbn"
-and "olid". ISBNs can be ISBN10 or ISBN13.
-Example: endpoint?isbn=123456790?olid=123456
+Extract ISBN, and auto-routes it. Data is sent as JSON,
 */
 func InsertRouteHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	// prep data
-	r.ParseForm()
-	isbn := r.Form.Get("isbn")
-	if isbn == "" {
-		fmt.Fprintln(w, "No ISBN in request URL")
+
+	defer r.Body.Close()
+	raw, err := io.ReadAll(r.Body)
+	if err != nil {
+		fmt.Fprintf(w, "JSON Read Failed")
 		return
 	}
-	olid := r.Form.Get("olid")
-	if olid == "" {
-		fmt.Fprintln(w, "No OLID in request URL")
+	val := new(db.InsertISBNParams)
+	json.Unmarshal(raw, val)
+
+	// write to DB
+
+	if !routeISBNtoOLID(val, r.Context()) {
+		log.Println(err)
+		fmt.Fprintf(w, "DB Write Failed")
 		return
 	}
-	if routeISBNtoOLID(isbn, olid, r) {
-		fmt.Fprintf(w, "Success: Route %s to %s\n", isbn, olid)
-		log.Printf("Success: Route %s to %s", isbn, olid)
-	} else {
-		fmt.Fprintf(w, "Fail: Route %s to %s\n", isbn, olid)
-		log.Printf("Fail: Route %s to %s", isbn, olid)
-	}
+	log.Printf("Book routed successfully: %s -> %s", val.Isbn, val.Olid)
 }
 
 /*
 Patches ISBN to an OLID and adds it to the database. Performs only input
 validation, not verifications. That is is done on the client side.
 */
-func routeISBNtoOLID(isbn string, olid string, r *http.Request) bool {
+func routeISBNtoOLID(ins *db.InsertISBNParams, ctx context.Context) bool {
 	// TODO: Add other sanitizing steps to the scraper layer
 	// Remove spaces and dashes
-	isbn = strings.ReplaceAll(strings.Trim(isbn, " \n\r"), "-", "")
-	olid = strings.ReplaceAll(strings.Trim(olid, " \n\r"), "-", "")
+	ins.Isbn = strings.ReplaceAll(strings.Trim(ins.Isbn, " \n\r"), "-", "")
+	ins.Olid = strings.ReplaceAll(strings.Trim(ins.Olid, " \n\r"), "-", "")
 
-	if !gisbn.Validate(isbn) {
-		log.Printf("Invalid ISBN: %s", isbn)
+	if !gisbn.Validate(ins.Isbn) {
+		log.Printf("Invalid ISBN: %s", ins.Isbn)
 		return false
 	}
-	if len(isbn) < 11 && len(isbn) > 8 {
-		isbn, _ = gisbn.To13(isbn)
+	if len(ins.Isbn) < 11 && len(ins.Isbn) > 8 {
+		ins.Isbn, _ = gisbn.To13(ins.Isbn)
 	}
 	// get context
-	ctx := r.Context()
-	err := internal.Queries.InsertISBN(ctx, db.InsertISBNParams{
-		Isbn: isbn,
-		Olid: olid,
-	})
+	err := internal.Queries.InsertISBN(ctx, *ins)
 
 	if err != nil {
 		return false

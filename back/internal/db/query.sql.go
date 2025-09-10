@@ -100,24 +100,24 @@ func (q *Queries) InsertReview(ctx context.Context, arg InsertReviewParams) erro
 }
 
 const insertWork = `-- name: InsertWork :exec
-INSERT INTO works (olid, title, author, description, published_year) values (?, ?, ?, ?, ?)
+INSERT INTO works (olid, title, cover,author, description) values (?, ?, ?, ?, ?)
 `
 
 type InsertWorkParams struct {
-	Olid          string  `json:"olid"`
-	Title         string  `json:"title"`
-	Author        *string `json:"author"`
-	Description   *string `json:"description"`
-	PublishedYear *int64  `json:"published_year"`
+	Olid        string  `json:"olid"`
+	Title       string  `json:"title"`
+	Cover       *string `json:"cover"`
+	Author      *string `json:"author"`
+	Description *string `json:"description"`
 }
 
 func (q *Queries) InsertWork(ctx context.Context, arg InsertWorkParams) error {
 	_, err := q.db.ExecContext(ctx, insertWork,
 		arg.Olid,
 		arg.Title,
+		arg.Cover,
 		arg.Author,
 		arg.Description,
-		arg.PublishedYear,
 	)
 	return err
 }

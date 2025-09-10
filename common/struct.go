@@ -15,5 +15,4 @@ type Work struct {
 	Author        *string `json:"author"`
 	Cover         *string `json:"cover"`
 	Description   *string `json:"description"`
-	PublishedYear *int64  `json:"published_year"`
 }
