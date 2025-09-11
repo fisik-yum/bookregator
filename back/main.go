@@ -14,7 +14,8 @@ func main() {
 	mux.HandleFunc("/api/insert/reviewsingle", handlers.InsertReviewSingleHandler)
 	mux.HandleFunc("/api/insert/reviewmultiple", handlers.InsertReviewMultipleHandler)
 	mux.HandleFunc("/api/insert/work", handlers.InsertWorkHandler)
-	mux.HandleFunc("/api/get/work", handlers.GetReviewsHandler)
+	mux.HandleFunc("/api/get/reviews", handlers.GetReviewsHandler)
+	mux.HandleFunc("/api/get/work", handlers.GetWorkHandler)
 
 	// Function to log request paths
 	loggingFn := func(w http.ResponseWriter, r *http.Request) {

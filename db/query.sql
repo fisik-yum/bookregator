@@ -12,3 +12,6 @@ SELECT * FROM reviews WHERE olid = ? ORDER BY RANDOM() LIMIT ?;
 
 -- name: GetOLIDFromISBN :one
 SELECT olid FROM isbns WHERE isbn = ? LIMIT 1;
+
+-- name: GetWorkByOLID :one
+SELECT * FROM works WHERE olid = ? LIMIT 1;

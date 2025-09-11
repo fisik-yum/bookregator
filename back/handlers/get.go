@@ -1,22 +1,32 @@
 package handlers
 
 import (
-	"log"
-	"encoding/json"
 	"book.buckminsterfullerene.net/db"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
 	"net/http"
 )
 
 // get book reviews
 func GetReviewsHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	olid := r.Form.Get("olid")
+	// TODO: Move this to frontend
+	defer r.Body.Close()
+	raw, err := io.ReadAll(r.Body)
+	if err != nil {
+		fmt.Fprintf(w, "JSON Read Failed")
+		return
+	}
+	val := new(db.GetXByOLIDParams)
+	json.Unmarshal(raw, val)
+
 	reviews, err := Q.GetNReviewsByOLID(r.Context(), db.GetNReviewsByOLIDParams{
-		Olid:  olid,
-		Limit: 7,
+		Olid:  val.OLID,
+		Limit: 5,
 	})
 	if err != nil {
-		log.Printf("Review Request for OLID: %s failed", olid)
+		log.Printf("Review Request for OLID: %s failed", val.OLID)
 		log.Println(err)
 	}
 
@@ -35,8 +45,30 @@ func GetReviewsHandler(w http.ResponseWriter, r *http.Request) {
 
 	reviewJSON, err := json.Marshal(reviewCommon)
 	if err != nil {
-		log.Printf("Review Request for OLID: %s failed", olid)
+		log.Printf("Review Request for OLID: %s failed", val.OLID)
 		log.Println(err)
 	}
 	w.Write(reviewJSON)
+}
+
+func GetWorkHandler(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	raw, err := io.ReadAll(r.Body)
+	if err != nil {
+		fmt.Fprintf(w, "JSON Read Failed")
+		return
+	}
+
+	val := new(db.GetXByOLIDParams)
+	json.Unmarshal(raw, val)
+
+	work, err := Q.GetWorkByOLID(r.Context(), val.OLID)
+
+	workJSON, err := json.Marshal(work)
+	if err != nil {
+		log.Printf("Work Request for OLID: %s failed", val.OLID)
+		log.Println(err)
+	}
+	w.Write(workJSON)
+
 }

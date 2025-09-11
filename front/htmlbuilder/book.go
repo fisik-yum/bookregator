@@ -2,22 +2,25 @@ package htmlbuilder
 
 import (
 	"api_front/internal"
-	"book.buckminsterfullerene.net/db"
+	"bytes"
 	"encoding/json"
 	"io"
 	"log"
+	"net/http"
+	"strconv"
+
+	"book.buckminsterfullerene.net/db"
 	g "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"strconv"
 )
 
 func Review(review db.Review) g.Node {
 	return Div(Class("card w-50 mx-auto"),
 		Div(Class("card-body"),
-			H5(Class("class-title"),
+			H4(Class("class-title"),
 				g.Text(review.Username),
 			),
-			H6(Class("class-subtitle"),
+			H5(Class("class-subtitle"),
 				g.Text(strconv.FormatFloat(*review.Rating, 'f', 0, 64)+" on "+review.Source),
 			),
 			P(Class("card-text"),
@@ -38,7 +41,19 @@ func Review(review db.Review) g.Node {
 //}
 
 func getReviews(olid string) []db.Review {
-	resp, err := internal.Client.Get("http://127.0.0.1:1024/api/get/work?olid=" + olid)
+	reqJSON, err := json.Marshal(db.GetXByOLIDParams{
+		OLID: olid})
+	if err != nil {
+		log.Print(err)
+		log.Printf("Review Request for OLID: %s failed", olid)
+	}
+	req, err := http.NewRequest("GET", "http://127.0.0.1:1024/api/get/reviews", bytes.NewBuffer(reqJSON))
+	if err != nil {
+		log.Print(err)
+		log.Printf("Review Request for OLID: %s failed", olid)
+	}
+
+	resp, err := internal.Client.Do(req)
 	if err != nil {
 		log.Print(err)
 		log.Printf("Review Request for OLID: %s failed", olid)

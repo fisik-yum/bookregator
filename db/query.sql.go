@@ -60,6 +60,23 @@ func (q *Queries) GetOLIDFromISBN(ctx context.Context, isbn string) (string, err
 	return olid, err
 }
 
+const getWorkByOLID = `-- name: GetWorkByOLID :one
+SELECT olid, title, author, cover, description FROM works WHERE olid = ? LIMIT 1
+`
+
+func (q *Queries) GetWorkByOLID(ctx context.Context, olid string) (Work, error) {
+	row := q.db.QueryRowContext(ctx, getWorkByOLID, olid)
+	var i Work
+	err := row.Scan(
+		&i.Olid,
+		&i.Title,
+		&i.Author,
+		&i.Cover,
+		&i.Description,
+	)
+	return i, err
+}
+
 const insertISBN = `-- name: InsertISBN :exec
 INSERT INTO isbns (isbn, olid) VALUES (?, ?)
 `
