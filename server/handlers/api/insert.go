@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"strings"
 
-	"book.buckminsterfullerene.net/db"
 	gisbn "github.com/moraes/isbn"
+	"server/db"
 )
 
 // single book insert mechanism

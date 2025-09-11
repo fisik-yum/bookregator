@@ -1,10 +1,11 @@
 package htmlbuilder
 
 import (
-	"book.buckminsterfullerene.net/db"
+	"server/db"
+	"strconv"
+
 	g "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"strconv"
 )
 
 func Review(review db.Review) g.Node {

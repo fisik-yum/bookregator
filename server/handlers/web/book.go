@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"net/http"
 
-	"book.buckminsterfullerene.net/db"
-	"book.buckminsterfullerene.net/htmlbuilder"
+	"server/db"
+	"server/htmlbuilder"
 )
 
 func BookHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Request) {

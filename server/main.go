@@ -7,7 +7,7 @@ import (
 	"server/handlers/api"
 	"server/handlers/web"
 
-	"book.buckminsterfullerene.net/db"
+	"server/db"
 )
 
 var D *sql.DB

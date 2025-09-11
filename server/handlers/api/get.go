@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	"book.buckminsterfullerene.net/db"
+	"server/db"
 )
 
 // get book reviews
