@@ -1,6 +1,6 @@
-module api_front
+module htmlbuilder
 
-go 1.24.6
+go 1.25.1
 
 replace book.buckminsterfullerene.net/db => ../db
 
@@ -10,6 +10,6 @@ require (
 )
 
 require (
-	git.sr.ht/~timharek/openlibrary-go v0.0.0
+	git.sr.ht/~timharek/openlibrary-go v0.0.0 // indirect
 	github.com/mattn/go-sqlite3 v1.14.32 // indirect
 )

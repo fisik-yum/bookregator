@@ -1,2 +1,2 @@
 TODO:
-- move *front* to *back* + rename to something more appropriate
+- implement some sort of basic authentication for the insertion APIs (HTTP Basic Auth?)
