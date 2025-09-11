@@ -72,7 +72,7 @@ class GRScraper(data.Scraper):
                     # rating=PageElement(eratingB).get("aria-label")
                     eratingC = eratingB.attrs["aria-label"]
                     if eratingC:
-                        rating = str(eratingC).split(" ")[1]
+                        rating = float((eratingC).split(" ")[1])
                     else:
                         logger.critical(f"{isbn}: Invalid rating attribute")
                         continue

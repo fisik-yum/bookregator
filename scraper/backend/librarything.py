@@ -79,7 +79,7 @@ class LTScraper(data.Scraper):
             if userRateA:
                 userRateB = userRateA.attrs["title"]
                 if userRateB:
-                    review.rating = userRateB.split(" ")[0]
+                    review.rating = float(userRateB.split(" ")[0])
                 else:
                     logger.critical(f"{isbn}: Invalid rating attribute")
                     continue

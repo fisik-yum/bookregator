@@ -1,12 +1,14 @@
 import undetected_chromedriver as uc
 import requests
-import logging, coloredlogs
+import logging
+import coloredlogs
 from backend import goodreads, librarything, olshim, data
 driver = uc.Chrome(use_subprocess=False, version_main=139)
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 coloredlogs.install()
-logger=logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
+
 
 def main():
     # librarything.LTScraper().getReviews("9780375822070", driver)
@@ -14,7 +16,7 @@ def main():
     # print("posting reviews")
 
     # print(olshim.GenerateWorkData("OL45804W").author)
-    books=["9780375822070"," 9780765348784","9781250887672"]
+    books = ["9780375822070", " 9780765348784", "9781250887672"]
     for book in books:
         ScrapeAndPost(book)
 

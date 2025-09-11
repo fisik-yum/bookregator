@@ -6,7 +6,7 @@ import undetected_chromedriver as uc
 
 class ReviewData():
     def __init__(self, olid: str, source: str, external_id: str, username: str,
-                 rating: str, text: str) -> None:
+                 rating: float, text: str) -> None:
         self.olid = olid
         self.source = source
         self.external_id = external_id
@@ -14,7 +14,7 @@ class ReviewData():
         self.rating = rating
         self.text = text
 
-    def asJSON(self) -> dict[str, str]:
+    def asJSON(self) -> dict[str, str | float]:
         return {
             "olid": self.olid,
             "source": self.source,
