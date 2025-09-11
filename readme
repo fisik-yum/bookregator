@@ -1,2 +1,2 @@
 TODO:
-- move database logic to separate *common* package to make development less painful
+- move *front* to *back* + rename to something more appropriate
