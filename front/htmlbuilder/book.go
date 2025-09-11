@@ -2,7 +2,7 @@ package htmlbuilder
 
 import (
 	"api_front/internal"
-	"book.buckminsterfullerene.net/common"
+	"book.buckminsterfullerene.net/db"
 	"encoding/json"
 	"io"
 	"log"
@@ -11,17 +11,17 @@ import (
 	"strconv"
 )
 
-func Review(review common.Review) g.Node {
+func Review(review db.Review) g.Node {
 	return Div(Class("card w-50 mx-auto"),
 		Div(Class("card-body"),
 			H5(Class("class-title"),
 				g.Text(review.Username),
 			),
 			H6(Class("class-subtitle"),
-				g.Text(strconv.FormatFloat(review.Rating, 'f', 0, 64)+" on "+review.Source),
+				g.Text(strconv.FormatFloat(*review.Rating, 'f', 0, 64)+" on "+review.Source),
 			),
 			P(Class("card-text"),
-				g.Text(review.Text),
+				g.Text(*review.Text),
 			),
 		),
 	)
@@ -37,7 +37,7 @@ func Review(review common.Review) g.Node {
 //	}
 //}
 
-func getReviews(olid string) []common.Review {
+func getReviews(olid string) []db.Review {
 	resp, err := internal.Client.Get("http://127.0.0.1:1024/api/get/work?olid=" + olid)
 	if err != nil {
 		log.Print(err)
@@ -49,7 +49,7 @@ func getReviews(olid string) []common.Review {
 		log.Printf("Review Request for OLID: %s failed", olid)
 	}
 
-	var reviewObj []common.Review
+	var reviewObj []db.Review
 	err = json.Unmarshal(reviewJSON, &reviewObj)
 	if err != nil {
 		log.Printf("Review Request for OLID: %s failed", olid)
