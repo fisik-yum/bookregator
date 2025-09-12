@@ -22,7 +22,6 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.CleanPath)
 
-
 	// manage global mux
 	r.Mount("/api", api.Router(D, Q))
 	r.Mount("/", web.Router(D,Q))

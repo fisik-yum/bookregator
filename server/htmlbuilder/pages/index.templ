@@ -1,0 +1,28 @@
+package pages
+
+import (
+	"net/http"
+	"server/htmlbuilder/shared"
+)
+
+type Index struct {
+	shared.Base
+}
+
+func NewIndex(b shared.Base) *Index {
+	return &Index{shared.NewBase()}
+}
+func (i *Index) Render(w http.ResponseWriter, r *http.Request) {
+	i.Html().Render(r.Context(), w)
+}
+
+templ (i *Index) Html() {
+	@i.Base.Html() {
+		<div class="jumbotron w-50 mx-auto">
+			<h1 class="display-4">bookregator</h1>
+			<p class="lead">
+				the free book review aggregator 
+			</p>
+		</div>
+	}
+}

@@ -1,0 +1,28 @@
+package pages
+
+import (
+	"net/http"
+	"server/db"
+	"server/htmlbuilder/components"
+	"server/htmlbuilder/shared"
+)
+
+type Work struct {
+	shared.Base
+	reviews []db.Review
+}
+
+func NewReview(b shared.Base, reviews []db.Review) *Work {
+	return &Work{shared.NewBase(), reviews}
+}
+func (v *Work) Render(w http.ResponseWriter, r *http.Request) {
+	v.Html().Render(r.Context(), w)
+}
+
+templ (v *Work) Html() {
+	@v.Base.Html() {
+		for _,val:=range v.reviews {
+			@components.ReviewCard(val)
+		}
+	}
+}

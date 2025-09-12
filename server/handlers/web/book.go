@@ -23,11 +23,10 @@ func BookHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 		// render page
-		v := htmlbuilder.ReviewPage(reviews)
-		v.Render(w)
+		htmlbuilder.ReviewPage(w,r,reviews)
 	}
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	htmlbuilder.Home().Render(w)
+	htmlbuilder.Index(w,r)
 }
