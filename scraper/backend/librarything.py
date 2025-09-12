@@ -32,7 +32,6 @@ class LTScraper(data.Scraper):
         else:
             logger.critical("No ISBN-LibraryThing work map")
             raise Exception("No ISBN-Work map")
-        return ""
 
     @staticmethod
     def getReviews(isbn: str, driver: uc.Chrome) -> list[data.ReviewData]:
@@ -85,6 +84,7 @@ class LTScraper(data.Scraper):
                     continue
             else:
                 logger.warn(f"{isbn}: No rating element")
+                review.rating=float(-1)
                 pass
             # external id
             idA = card.select_one("span.mr_note_item")

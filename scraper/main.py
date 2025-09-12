@@ -11,11 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    # librarything.LTScraper().getReviews("9780375822070", driver)
-    # print(f"# of reviews: {len(revs)}")
-    # print("posting reviews")
-
-    # print(olshim.GenerateWorkData("OL45804W").author)
     books = ["9780375822070", " 9780765348784", "9781250887672"]
     for book in books:
         ScrapeAndPost(book)
@@ -36,17 +31,16 @@ def ScrapeAndPost(isbn: str):
     # actually scrape data
     for s in scrapers:
         reviews_final = reviews_final+s.getReviews(isbn, driver)
+    # fix olid
+    for review in reviews_final:
+        review.olid = olid
     # insert work
     requests.post(
         "http://127.0.0.1:1024/api/insert/work", json=work.asJSON())
     # create routing
     requests.post(
         "http://127.0.0.1:1024/api/insert/route", json=route.asJSON())
-    # fix olid and post REVIEWS to the db
-    for review in reviews_final:
-        review.olid = olid
-        requests.post(
-            "http://127.0.0.1:1024/api/insert/reviewsingle", json=review.asJSON())
-
-
+    # Post REVIEWS to the db using reviewmultiple for decreased overhead
+    requests.post(
+        "http://127.0.0.1:1024/api/insert/reviewmultiple", json=[r.asJSON() for r in reviews_final])
 main()
