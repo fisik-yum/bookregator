@@ -10,10 +10,11 @@ import (
 type Work struct {
 	shared.Base
 	reviews []db.Review
+	work    db.Work
 }
 
-func NewReview(b shared.Base, reviews []db.Review) *Work {
-	return &Work{shared.NewBase(), reviews}
+func NewReview(b shared.Base, reviews []db.Review, work db.Work) *Work {
+	return &Work{shared.NewBase(), reviews, work}
 }
 func (v *Work) Render(w http.ResponseWriter, r *http.Request) {
 	v.Html().Render(r.Context(), w)
@@ -21,6 +22,7 @@ func (v *Work) Render(w http.ResponseWriter, r *http.Request) {
 
 templ (v *Work) Html() {
 	@v.Base.Html() {
+		@components.BookInfoBox(v.work)
 		for _,val:=range v.reviews {
 			@components.ReviewCard(val)
 		}

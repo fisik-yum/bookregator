@@ -22,7 +22,9 @@ def GenerateWorkData(olidw: str) -> data.WorkData:
     work.description = temp.description
     work.title = temp.title
     if hasattr(temp,"covers"):
-        work.cover = temp.covers[0] if len(temp.covers) > 0 else ""
+        work.cover = str(temp.covers[0]) if len(temp.covers) > 0 else ""
+    else:
+        print("No Cover")
     # TODO: fix author
     # work.author = temp.authors
     return work

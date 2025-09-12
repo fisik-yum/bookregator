@@ -18,10 +18,11 @@ import (
 type Work struct {
 	shared.Base
 	reviews []db.Review
+	work    db.Work
 }
 
-func NewReview(b shared.Base, reviews []db.Review) *Work {
-	return &Work{shared.NewBase(), reviews}
+func NewReview(b shared.Base, reviews []db.Review, work db.Work) *Work {
+	return &Work{shared.NewBase(), reviews, work}
 }
 func (v *Work) Render(w http.ResponseWriter, r *http.Request) {
 	v.Html().Render(r.Context(), w)
@@ -60,6 +61,10 @@ func (v *Work) Html() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = components.BookInfoBox(v.work).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 			for _, val := range v.reviews {
 				templ_7745c5c3_Err = components.ReviewCard(val).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
