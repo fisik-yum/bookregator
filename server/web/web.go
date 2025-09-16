@@ -13,14 +13,14 @@ import (
 	"github.com/tdewolff/minify"
 )
 
-// go: embed static/*
+//go:embed static/*
 var staticFS embed.FS
 
 func Router(D *sql.DB, Q db.Queries) chi.Router {
 	web := chi.NewRouter()
 	web.HandleFunc("/", Home)
 	web.HandleFunc("/book", BookHandler(D, Q))
-	web.Mount("/static", staticRouter(604800))
+	web.Mount("/static", staticRouter(0))
 	return web
 }
 

@@ -61,13 +61,18 @@ func (q *Queries) GetOLIDFromISBN(ctx context.Context, isbn string) (string, err
 }
 
 const getStats = `-- name: GetStats :one
-SELECT olid, review_count, rating FROM stats WHERE olid = ? LIMIT 1
+SELECT olid, review_count, rating, ci_bound FROM stats WHERE olid = ? LIMIT 1
 `
 
 func (q *Queries) GetStats(ctx context.Context, olid string) (Stat, error) {
 	row := q.db.QueryRowContext(ctx, getStats, olid)
 	var i Stat
-	err := row.Scan(&i.Olid, &i.ReviewCount, &i.Rating)
+	err := row.Scan(
+		&i.Olid,
+		&i.ReviewCount,
+		&i.Rating,
+		&i.CiBound,
+	)
 	return i, err
 }
 
@@ -127,6 +132,27 @@ func (q *Queries) InsertReview(ctx context.Context, arg InsertReviewParams) erro
 	return err
 }
 
+const insertStat = `-- name: InsertStat :exec
+INSERT  INTO stats (olid, review_count, rating, ci_bound) VALUES (?, ?, ?, ?)
+`
+
+type InsertStatParams struct {
+	Olid        string   `json:"olid"`
+	ReviewCount *int64   `json:"review_count"`
+	Rating      *float64 `json:"rating"`
+	CiBound     *float64 `json:"ci_bound"`
+}
+
+func (q *Queries) InsertStat(ctx context.Context, arg InsertStatParams) error {
+	_, err := q.db.ExecContext(ctx, insertStat,
+		arg.Olid,
+		arg.ReviewCount,
+		arg.Rating,
+		arg.CiBound,
+	)
+	return err
+}
+
 const insertWork = `-- name: InsertWork :exec
 INSERT INTO works (olid, title, cover,author, description) values (?, ?, ?, ?, ?)
 `
@@ -150,13 +176,33 @@ func (q *Queries) InsertWork(ctx context.Context, arg InsertWorkParams) error {
 	return err
 }
 
-const updateStatistics = `-- name: UpdateStatistics :exec
-INSERT INTO stats (olid, rating, review_count) 
-VALUES (?1, (SELECT COALESCE(AVG(rating), -1) FROM reviews WHERE reviews.olid = ?1 AND rating !=-1), (SELECT COUNT(reviews.olid) FROM reviews WHERE olid=?1 AND rating != -1))
-ON CONFLICT(olid) DO UPDATE SET rating = excluded.rating
+const rawStatsFromTable = `-- name: RawStatsFromTable :one
+SELECT
+    olid AS olid,
+    COUNT(rating) AS count_ratings,
+    AVG(rating) AS avg_ratings,
+    SUM(rating * rating) AS sum_ratings_squared
+FROM reviews
+WHERE
+    olid = ?1 AND rating != -1
 `
 
-func (q *Queries) UpdateStatistics(ctx context.Context, olid string) error {
-	_, err := q.db.ExecContext(ctx, updateStatistics, olid)
-	return err
+type RawStatsFromTableRow struct {
+	Olid              string   `json:"olid"`
+	CountRatings      int64    `json:"count_ratings"`
+	AvgRatings        *float64 `json:"avg_ratings"`
+	SumRatingsSquared *float64 `json:"sum_ratings_squared"`
+}
+
+// TODO: make this incremental
+func (q *Queries) RawStatsFromTable(ctx context.Context, olid string) (RawStatsFromTableRow, error) {
+	row := q.db.QueryRowContext(ctx, rawStatsFromTable, olid)
+	var i RawStatsFromTableRow
+	err := row.Scan(
+		&i.Olid,
+		&i.CountRatings,
+		&i.AvgRatings,
+		&i.SumRatingsSquared,
+	)
+	return i, err
 }

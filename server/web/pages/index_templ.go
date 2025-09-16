@@ -57,7 +57,7 @@ func (i *Index) Html() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"jumbotron w-50 mx-auto\"><h1 class=\"display-4\">bookregator</h1><p class=\"lead\">the free book review aggregator </p></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"jumbotron w-50 mx-auto\"><h1 class=\"display-4\">bookregator</h1><p class=\"lead\">the book review aggregator </p><form class=\"d-flex\" method=\"get\" action=\"book\"><input class=\"form-control me-2\" name=\"olid\" id=\"olid\" type=\"search\" placeholder=\"Search OLID\"></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

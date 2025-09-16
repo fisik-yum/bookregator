@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"net/http"
 	"strings"
 
-	gisbn "github.com/moraes/isbn"
 	"server/db"
+
+	gisbn "github.com/moraes/isbn"
 )
 
 // single book insert mechanism
@@ -73,7 +75,13 @@ func InsertReviewSingleHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWrit
 		}
 		log.Printf("Review for Book %s; User %s inserted", review.Olid, review.Username)
 		// update statistics
-		err = Q.UpdateStatistics(ctx, extrrev.Olid)
+		s, err := Q.RawStatsFromTable(ctx, extrrev.Olid)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		err = Q.InsertStat(ctx, db.InsertStatParams(statsCalculator(D,Q,s)))
+
 		// commit
 		if err != nil {
 			log.Println(err)
@@ -141,11 +149,13 @@ func InsertReviewMultipleHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWr
 
 		// update statistics
 		for olid := range olidmap {
-			err = qtx.UpdateStatistics(ctx, olid)
+			s, err := qtx.RawStatsFromTable(ctx, olid)
 			if err != nil {
 				log.Println(err)
 				return
 			}
+
+			qtx.InsertStat(ctx, db.InsertStatParams(statsCalculator(D,Q,s)))
 		}
 		tx.Commit()
 	}
@@ -153,8 +163,7 @@ func InsertReviewMultipleHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWr
 
 /*
 Extract ISBN, and auto-routes it. Data is sent as JSON,
-*/
-func InsertRouteHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Request) {
+*/func InsertRouteHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -192,5 +201,20 @@ func InsertRouteHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *
 			return
 		}
 		log.Printf("Book routed successfully: %s -> %s", val.Isbn, val.Olid)
+	}
+}
+
+func statsCalculator(D *sql.DB, Q db.Queries, datum db.RawStatsFromTableRow) db.Stat {
+	if datum.CountRatings < 1 {
+		return db.Stat{}
+	}
+	stddev := math.Sqrt(*datum.SumRatingsSquared / float64(datum.CountRatings-1))
+	stderror := stddev / math.Sqrt(float64(datum.CountRatings))
+	bound := 1.96 * stderror
+	return db.Stat{
+		Olid:        datum.Olid,
+		ReviewCount: &datum.CountRatings,
+		Rating:      datum.AvgRatings,
+		CiBound:     &bound,
 	}
 }

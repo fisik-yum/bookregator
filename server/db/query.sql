@@ -19,7 +19,16 @@ SELECT * FROM works WHERE olid = ? LIMIT 1;
 -- name: GetStats :one
 SELECT * FROM stats WHERE olid = ? LIMIT 1;
 
--- name: UpdateStatistics :exec
-INSERT INTO stats (olid, rating, review_count) 
-VALUES (sqlc.arg(olid), (SELECT COALESCE(AVG(rating), -1) FROM reviews WHERE reviews.olid = sqlc.arg(olid) AND rating !=-1), (SELECT COUNT(reviews.olid) FROM reviews WHERE olid=sqlc.arg(olid) AND rating != -1))
-ON CONFLICT(olid) DO UPDATE SET rating = excluded.rating;
+-- TODO: make this incremental
+-- name: RawStatsFromTable :one
+SELECT
+    olid AS olid,
+    COUNT(rating) AS count_ratings,
+    AVG(rating) AS avg_ratings,
+    SUM(rating * rating) AS sum_ratings_squared
+FROM reviews
+WHERE
+    olid = sqlc.arg(olid) AND rating != -1;
+
+-- name: InsertStat :exec
+INSERT  INTO stats (olid, review_count, rating, ci_bound) VALUES (?, ?, ?, ?);

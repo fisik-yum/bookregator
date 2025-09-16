@@ -21,8 +21,11 @@ templ (i *Index) Html() {
 		<div class="jumbotron w-50 mx-auto">
 			<h1 class="display-4">bookregator</h1>
 			<p class="lead">
-				the free book review aggregator 
+				the book review aggregator 
 			</p>
+			<form class="d-flex" method="get" action="book">
+				<input class="form-control me-2" name="olid" id="olid" type="search" placeholder="Search OLID"/>
+			</form>
 		</div>
 	}
 }

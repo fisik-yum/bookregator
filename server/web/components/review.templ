@@ -5,12 +5,12 @@ import "strconv"
 import "strings"
 
 templ ReviewCard(r db.Review) {
-	<div class="card w-50 mx-auto reviewcard" data-source={ r.Source } data-id={ r.ExternalID }>
+	<div class="card w-50 mx-auto reviewcard mb-1 mt-2" data-source={ r.Source } data-id={ r.ExternalID }>
 		<div class="card-body">
 			<h4 class="class-title">{ r.Username }</h4>
 			<span class="badge bg-secondary">
 				{ r.Source } | 
-				if *r.Rating<=float64(0) {
+				if *r.Rating<=float64(0) || r.Rating==nil{
 					No Rating
 				} else {
 					{ strconv.FormatFloat(*r.Rating,'f',1,64) } out of 5

@@ -23,6 +23,7 @@ type Stat struct {
 	Olid        string   `json:"olid"`
 	ReviewCount *int64   `json:"review_count"`
 	Rating      *float64 `json:"rating"`
+	CiBound     *float64 `json:"ci_bound"`
 }
 
 type Work struct {

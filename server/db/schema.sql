@@ -27,7 +27,6 @@ CREATE TABLE stats (
     olid TEXT PRIMARY KEY references works(olid),
     review_count INTEGER,
     rating REAL,
-    nf_lower INTEGER,
-    nf_upper INTEGER,
+    ci_bound REAL,
     UNIQUE(olid)
 );
