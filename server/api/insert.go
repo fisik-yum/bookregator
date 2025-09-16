@@ -65,12 +65,20 @@ func InsertReviewSingleHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWrit
 			Rating: (review.Rating),
 			Text:   review.Text,
 		}
+
 		err = Q.InsertReview(ctx, extrrev)
 		if err != nil {
 			log.Println(err)
-			fmt.Fprintf(w, "DB Write Failed")
+			return
 		}
 		log.Printf("Review for Book %s; User %s inserted", review.Olid, review.Username)
+		// update statistics
+		err = Q.UpdateStatistics(ctx, extrrev.Olid)
+		// commit
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 }
 
@@ -90,7 +98,6 @@ func InsertReviewMultipleHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWr
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			log.Println(err)
-			fmt.Fprintf(w, "JSON Read Failed")
 			return
 		}
 		json.Unmarshal(body, &reviews)
@@ -99,21 +106,48 @@ func InsertReviewMultipleHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWr
 		tx, err := D.Begin()
 		if err != nil {
 			log.Println(err)
-			fmt.Fprintf(w, "DB Txn start failed")
 			return
 		}
 		defer tx.Rollback()
 
 		qtx := Q.WithTx(tx)
+
+		// set
+		olidmap := make(map[string]struct{})
 		for _, review := range reviews {
-			qtx.InsertReview(ctx, review)
+			err = qtx.InsertReview(ctx, review)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			olidmap[review.Olid] = struct{}{}
 		}
+
 		err = tx.Commit()
 		if err != nil {
 			log.Println(err)
-			fmt.Fprintf(w, "DB Txn commit failed")
 			return
 		}
+
+		// TODO: reduce code duplication, optimize
+		tx, err = D.Begin()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		defer tx.Rollback()
+
+		qtx = Q.WithTx(tx)
+
+		// update statistics
+		for olid := range olidmap {
+			err = qtx.UpdateStatistics(ctx, olid)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+		}
+		tx.Commit()
 	}
 }
 

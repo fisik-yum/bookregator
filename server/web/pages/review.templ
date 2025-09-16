@@ -3,18 +3,19 @@ package pages
 import (
 	"net/http"
 	"server/db"
-	"server/htmlbuilder/components"
-	"server/htmlbuilder/shared"
+	"server/web/components"
+	"server/web/shared"
 )
 
 type Work struct {
 	shared.Base
 	reviews []db.Review
 	work    db.Work
+    stats db.Stat
 }
 
-func NewReview(b shared.Base, reviews []db.Review, work db.Work) *Work {
-	return &Work{shared.NewBase(), reviews, work}
+func NewReview(reviews []db.Review, work db.Work, stat db.Stat) *Work {
+	return &Work{shared.NewBase(work.Title), reviews, work, stat}
 }
 func (v *Work) Render(w http.ResponseWriter, r *http.Request) {
 	v.Html().Render(r.Context(), w)
@@ -22,7 +23,7 @@ func (v *Work) Render(w http.ResponseWriter, r *http.Request) {
 
 templ (v *Work) Html() {
 	@v.Base.Html() {
-		@components.BookInfoBox(v.work)
+		@components.BookInfoBox(v.work,v.stats)
 		for _,val:=range v.reviews {
 			@components.ReviewCard(val)
 		}

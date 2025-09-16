@@ -5,8 +5,7 @@ import (
 	"net/http"
 
 	"server/db"
-	"server/htmlbuilder/pages"
-	"server/htmlbuilder/shared"
+	"server/web/pages"
 )
 
 func BookHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Request) {
@@ -23,17 +22,23 @@ func BookHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		work, err := Q.GetWorkByOLID(r.Context(), olid)
+		ctx:=r.Context()
+		
+		work, err := Q.GetWorkByOLID(ctx, olid)
+		if err != nil {
+			return
+		}
+		stat,err:=Q.GetStats(ctx,olid)
 		if err != nil {
 			return
 		}
 
-		pages.NewReview(shared.NewBase(), reviews,work).Render(w, r)
 		// render page
+		pages.NewReview(reviews,work,stat).Render(w, r)
 	}
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
 
-	pages.NewIndex(shared.NewBase()).Render(w, r)
+	pages.NewIndex().Render(w, r)
 }

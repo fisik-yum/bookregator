@@ -55,6 +55,8 @@ class GRScraper(data.Scraper):
             if etextA:
                 etextB = etextA.select_one("span.Formatted")
                 if etextB:
+                    for br in etextB.find_all("br"):
+                            br.replace_with("\n")
                     text = etextB.text
                 else:
                     logger.critical(f"{isbn}: No review span")

@@ -10,25 +10,21 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"net/http"
-	"server/db"
-	"server/htmlbuilder/components"
-	"server/htmlbuilder/shared"
+	"server/web/shared"
 )
 
-type Work struct {
+type Index struct {
 	shared.Base
-	reviews []db.Review
-	work    db.Work
 }
 
-func NewReview(b shared.Base, reviews []db.Review, work db.Work) *Work {
-	return &Work{shared.NewBase(), reviews, work}
+func NewIndex() *Index {
+	return &Index{shared.NewBase("Bookregator")}
 }
-func (v *Work) Render(w http.ResponseWriter, r *http.Request) {
-	v.Html().Render(r.Context(), w)
+func (i *Index) Render(w http.ResponseWriter, r *http.Request) {
+	i.Html().Render(r.Context(), w)
 }
 
-func (v *Work) Html() templ.Component {
+func (i *Index) Html() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -61,19 +57,13 @@ func (v *Work) Html() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = components.BookInfoBox(v.work).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"jumbotron w-50 mx-auto\"><h1 class=\"display-4\">bookregator</h1><p class=\"lead\">the free book review aggregator </p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			for _, val := range v.reviews {
-				templ_7745c5c3_Err = components.ReviewCard(val).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
 			return nil
 		})
-		templ_7745c5c3_Err = v.Base.Html().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = i.Base.Html().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

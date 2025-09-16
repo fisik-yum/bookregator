@@ -69,7 +69,9 @@ class LTScraper(data.Scraper):
             # text content
             userText = card.select_one("div.mr_review_content")
             if userText:
-                review.text = userText.text
+                for br in userText.find_all("br"):
+                        br.replace_with("\n")
+                review.text = userText.text.replace("½", "").removesuffix("show less")
             else:
                 logger.critical(f"{isbn}: No review element")
                 continue

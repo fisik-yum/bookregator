@@ -7,8 +7,8 @@ import (
 	"log"
 	"net/http"
 	"server/db"
-	"server/handlers/api"
-	"server/handlers/web"
+	"server/api"
+	"server/web"
 )
 
 var D *sql.DB

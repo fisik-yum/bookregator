@@ -17,6 +17,8 @@ def main():
 
 
 def ScrapeAndPost(isbn: str):
+    # auth setup
+    authkeys = ("scraper", "opensesame")
     # get list of scrapers
     scrapers = [goodreads.GRScraper, librarything.LTScraper]
 
@@ -36,11 +38,11 @@ def ScrapeAndPost(isbn: str):
         review.olid = olid
     # insert work
     requests.post(
-        "http://127.0.0.1:1024/api/insert/work", json=work.asJSON())
+        "http://127.0.0.1:1024/api/insert/work", json=work.asJSON(), auth=authkeys)
     # create routing
     requests.post(
-        "http://127.0.0.1:1024/api/insert/route", json=route.asJSON())
+        "http://127.0.0.1:1024/api/insert/route", json=route.asJSON(), auth=authkeys)
     # Post REVIEWS to the db using reviewmultiple for decreased overhead
     requests.post(
-        "http://127.0.0.1:1024/api/insert/reviewmultiple", json=[r.asJSON() for r in reviews_final])
+        "http://127.0.0.1:1024/api/insert/reviewmultiple", json=[r.asJSON() for r in reviews_final], auth=authkeys)
 main()

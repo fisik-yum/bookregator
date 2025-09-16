@@ -10,4 +10,8 @@ require (
 	maragu.dev/gomponents v1.2.0
 )
 
-require github.com/a-h/templ v0.3.943 // indirect
+require (
+	github.com/a-h/templ v0.3.943 // indirect
+	github.com/tdewolff/minify v2.3.6+incompatible // indirect
+	github.com/tdewolff/parse v2.3.4+incompatible // indirect
+)

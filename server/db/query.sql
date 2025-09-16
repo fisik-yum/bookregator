@@ -15,3 +15,11 @@ SELECT olid FROM isbns WHERE isbn = ? LIMIT 1;
 
 -- name: GetWorkByOLID :one
 SELECT * FROM works WHERE olid = ? LIMIT 1;
+
+-- name: GetStats :one
+SELECT * FROM stats WHERE olid = ? LIMIT 1;
+
+-- name: UpdateStatistics :exec
+INSERT INTO stats (olid, rating, review_count) 
+VALUES (sqlc.arg(olid), (SELECT COALESCE(AVG(rating), -1) FROM reviews WHERE reviews.olid = sqlc.arg(olid) AND rating !=-1), (SELECT COUNT(reviews.olid) FROM reviews WHERE olid=sqlc.arg(olid) AND rating != -1))
+ON CONFLICT(olid) DO UPDATE SET rating = excluded.rating;
