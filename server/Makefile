@@ -5,6 +5,6 @@ build-test:
 	cd db;sqlc generate
 	go build -v && mv server artifacts/ 
 	cd artifacts;./server
-prep:
+generate:
 	templ generate
 	cd db;sqlc generate

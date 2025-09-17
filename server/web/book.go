@@ -2,6 +2,7 @@ package web
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 
 	"server/db"
@@ -19,6 +20,7 @@ func BookHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Re
 			Limit: 5,
 		})
 		if err != nil {
+			log.Println(err)
 			return
 		}
 
@@ -26,11 +28,13 @@ func BookHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Re
 		
 		work, err := Q.GetWorkByOLID(ctx, olid)
 		if err != nil {
+			log.Println(err)
 			return
 		}
 		stat,err:=Q.GetStats(ctx,olid)
 		if err != nil {
-			return
+			log.Println(err)
+			//return
 		}
 
 		// render page
@@ -38,6 +42,18 @@ func BookHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Re
 	}
 }
 
+
+func RandomBookHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r*http.Request){
+		ctx:=r.Context()
+		olid,err:=Q.GetRandomWork(ctx)
+		if err!=nil{
+			log.Println(err)
+			return
+		}
+		http.Redirect(w,r,"book?olid="+olid,http.StatusPermanentRedirect)
+	}
+}
 func Home(w http.ResponseWriter, r *http.Request) {
 
 	pages.NewIndex().Render(w, r)

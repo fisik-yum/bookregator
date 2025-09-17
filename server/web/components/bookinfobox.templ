@@ -8,22 +8,28 @@ templ BookInfoBox(w db.Work, s db.Stat) {
 	<div class="text-center justify-content-center bookinfobox">
 		<figure class="figure">
 			if w.Cover!=nil {
-				<img src={ fmt.Sprintf("https://covers.openlibrary.org/b/id/%s-L.jpg", *w.Cover) } class="figure-img img-fluid rounded" alt="book cover"/>
+				<img src={ fmt.Sprintf("https://covers.openlibrary.org/b/id/%s-L.jpg", *w.Cover) } class="figure-img img-fluid rounded border" alt="book cover"/>
 			} else {
-				<img src={ "https://openlibrary.org/images/icons/avatar_book-lg.png" } class="figure-img img-fluid rounded" alt="book cover"/>
+				<img src={ "https://openlibrary.org/images/icons/avatar_book-lg.png" } class="figure-img img-fluid rounded border" alt="book cover"/>
 			}
 			<figcaption class="figure-caption">
 				{ w.Title }
 			</figcaption>
-			<span class="badge bg-secondary">
-				if *s.Rating<=float64(0) {
-					No Rating
-				} else {
-					{ strconv.FormatFloat(*s.Rating,'f',2,64) } ± 
-					{ strconv.FormatFloat(*s.CiBound,'f',2,64) } out of 5 (95% CI)
-				}
-				| { *s.ReviewCount } ratings
-			</span>
+			if s.Rating!=nil && s.CiBound!=nil {
+				<span class="badge bg-secondary">
+					if *s.Rating<=float64(0) {
+						No Rating
+					} else {
+						{ strconv.FormatFloat(*s.Rating,'f',2,64) } ± 
+						{ strconv.FormatFloat(*s.CiBound,'f',2,64) } out of 5 (95% CI)
+					}
+					| { *s.ReviewCount } ratings
+				</span>
+			} else {
+				<span class="badge bg-secondary">
+					No Ratings !
+				</span>
+			}
 		</figure>
 	</div>
 }

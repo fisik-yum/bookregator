@@ -60,6 +60,17 @@ func (q *Queries) GetOLIDFromISBN(ctx context.Context, isbn string) (string, err
 	return olid, err
 }
 
+const getRandomWork = `-- name: GetRandomWork :one
+SELECT olid FROM works ORDER BY RANDOM() LIMIT 1
+`
+
+func (q *Queries) GetRandomWork(ctx context.Context) (string, error) {
+	row := q.db.QueryRowContext(ctx, getRandomWork)
+	var olid string
+	err := row.Scan(&olid)
+	return olid, err
+}
+
 const getStats = `-- name: GetStats :one
 SELECT olid, review_count, rating, ci_bound FROM stats WHERE olid = ? LIMIT 1
 `
@@ -134,6 +145,7 @@ func (q *Queries) InsertReview(ctx context.Context, arg InsertReviewParams) erro
 
 const insertStat = `-- name: InsertStat :exec
 INSERT  INTO stats (olid, review_count, rating, ci_bound) VALUES (?, ?, ?, ?)
+ON CONFLICT(olid) DO UPDATE SET review_count=excluded.review_count, rating=excluded.rating, ci_bound=excluded.ci_bound
 `
 
 type InsertStatParams struct {
@@ -194,7 +206,6 @@ type RawStatsFromTableRow struct {
 	SumRatingsSquared *float64 `json:"sum_ratings_squared"`
 }
 
-// TODO: make this incremental
 func (q *Queries) RawStatsFromTable(ctx context.Context, olid string) (RawStatsFromTableRow, error) {
 	row := q.db.QueryRowContext(ctx, rawStatsFromTable, olid)
 	var i RawStatsFromTableRow

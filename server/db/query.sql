@@ -19,7 +19,9 @@ SELECT * FROM works WHERE olid = ? LIMIT 1;
 -- name: GetStats :one
 SELECT * FROM stats WHERE olid = ? LIMIT 1;
 
--- TODO: make this incremental
+-- name: GetRandomWork :one
+SELECT olid FROM works ORDER BY RANDOM() LIMIT 1;
+
 -- name: RawStatsFromTable :one
 SELECT
     olid AS olid,
@@ -31,4 +33,6 @@ WHERE
     olid = sqlc.arg(olid) AND rating != -1;
 
 -- name: InsertStat :exec
-INSERT  INTO stats (olid, review_count, rating, ci_bound) VALUES (?, ?, ?, ?);
+INSERT  INTO stats (olid, review_count, rating, ci_bound) VALUES (?, ?, ?, ?)
+ON CONFLICT(olid) DO UPDATE SET review_count=excluded.review_count, rating=excluded.rating, ci_bound=excluded.ci_bound
+;

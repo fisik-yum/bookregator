@@ -29,7 +29,7 @@ func Navbar() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"navbar navbar-expand navbar-light bg-light sticky-top\"><div class=\"container-fluid\"><a class=\"navbar-brand\">bookregator</a><div class=\"collapse navbar-collapse\"><ul class=\"navbar-nav me-auto mb-2 mb-lg-0\"><li class=\"nav-item\"><a class=\"nav-link\" href=\"/\">Home</a></li><li class=\"nav-item\"><a class=\"nav-link\" href=\"/about\">About</a></li><form class=\"d-flex\" method=\"get\" action=\"book\"><input class=\"form-control me-2\" name=\"olid\" id=\"olid\" type=\"search\" placeholder=\"Search OLID\"></form></ul></div></div></nav>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"navbar navbar-expand navbar-light bg-light sticky-top\"><div class=\"container-fluid\"><a class=\"navbar-brand\">bookregator</a><div class=\"collapse navbar-collapse\"><ul class=\"navbar-nav me-auto mb-2 mb-lg-0\"><li class=\"nav-item\"><a class=\"nav-link\" href=\"/\">Home</a></li><li class=\"nav-item\"><a class=\"nav-link\" href=\"/random\">Random</a></li><li class=\"nav-item\"><a class=\"nav-link\" href=\"/about\">About</a></li><form class=\"d-flex\" method=\"get\" action=\"book\"><input class=\"form-control me-2\" name=\"olid\" id=\"olid\" type=\"search\" placeholder=\"Search OLID\"></form></ul></div></div></nav>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -27,6 +27,7 @@ func secureRouter(D *sql.DB, Q db.Queries) chi.Router {
 		r.Post("/work", InsertWorkHandler(D, Q))
 		r.Post("/reviewsingle", InsertReviewSingleHandler(D, Q))
 		r.Post("/reviewmultiple", InsertReviewMultipleHandler(D, Q))
+		r.Post("/refreshstats", UpdateStatGlobal(D, Q))
 	})
 
 	return secure

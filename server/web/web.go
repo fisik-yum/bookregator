@@ -20,6 +20,7 @@ func Router(D *sql.DB, Q db.Queries) chi.Router {
 	web := chi.NewRouter()
 	web.HandleFunc("/", Home)
 	web.HandleFunc("/book", BookHandler(D, Q))
+	web.HandleFunc("/random", RandomBookHandler(D, Q))
 	web.Mount("/static", staticRouter(0))
 	return web
 }
