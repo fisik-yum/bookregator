@@ -61,7 +61,6 @@ func SearchHandler(D *sql.DB, Q db.Queries, S search.SearchMachine) func(w http.
 		ctx := r.Context()
 		r.ParseForm()
 		query := r.Form.Get("query")
-		log.Println(query)
 
 		// actually query the index
 		idlist, err := S.SearchItem(query, ctx)
