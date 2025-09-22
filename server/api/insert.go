@@ -26,7 +26,7 @@ func InsertWorkHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *h
 		json.Unmarshal(raw, val)
 
 		// write to DB
-		err = logic.Work(D,Q,r.Context(),val)
+		err = logic.Work(D, Q, r.Context(), val)
 		if err != nil {
 			log.Println(err)
 			return

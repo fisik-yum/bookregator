@@ -16,11 +16,11 @@ var olib openlibrary.Client
 //go:embed schema.sql
 var scheme string
 
-func DBinit() (D *sql.DB,Q Queries){
+func DBinit(loc string) (D *sql.DB, Q Queries) {
 	olib = openlibrary.New()
 
 	var err error
-	D, err = sql.Open("sqlite3", "test.sqlite3")
+	D, err = sql.Open("sqlite3", loc)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -101,9 +101,9 @@ func MassRefreshStats(D *sql.DB, Q db.Queries, ctx context.Context) error {
 	return nil
 }
 
-func Work(D *sql.DB, Q db.Queries, ctx context.Context, val *db.InsertWorkParams) error{
-	err:=Q.InsertWork(ctx,*val)
-	if err!=nil{
+func Work(D *sql.DB, Q db.Queries, ctx context.Context, val *db.InsertWorkParams) error {
+	err := Q.InsertWork(ctx, *val)
+	if err != nil {
 		return err
 	}
 	return nil

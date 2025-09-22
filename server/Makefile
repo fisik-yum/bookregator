@@ -8,3 +8,7 @@ build-test:
 generate:
 	templ generate
 	cd db;sqlc generate
+git:
+	gofmt -s -w -l .
+	go fix
+	go mod tidy

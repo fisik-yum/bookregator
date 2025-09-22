@@ -1,0 +1,29 @@
+package pages
+
+import "server/db"
+import "server/web/shared"
+import "net/http"
+import "server/web/components"
+
+type Search struct {
+	Base    shared.Base
+	results []db.Work
+	stats   []db.Stat
+}
+
+func NewSearch(query string, works []db.Work, stats []db.Stat) *Search {
+	return &Search{shared.NewBase(query), works, stats}
+}
+func (s *Search) Render(w http.ResponseWriter, r *http.Request) {
+	s.Html().Render(r.Context(), w)
+}
+
+templ (s *Search) Html() {
+	@s.Base.Html() {
+		<div class="w-50 mx-auto reviewcard mb-1 mt-2">
+			for i:=range s.results {
+				@components.SearchItem(s.results[i], s.stats[i])
+			}
+		</div>
+	}
+}

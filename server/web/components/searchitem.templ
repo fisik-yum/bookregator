@@ -1,0 +1,41 @@
+package components
+
+import (
+	"fmt"
+	"server/db"
+	"strconv"
+)
+
+templ SearchItem(w db.Work, s db.Stat) {
+	<div class="container-fluid container-md">
+		<div class="card">
+			<div class="card-header">
+				<a href={ "book?olid=" + w.Olid }>{ w.Title }</a>
+				if s.Rating!=nil {
+					<span class="badge bg-secondary">
+						if *s.Rating<=float64(0) {
+							No Rating
+						} else {
+							{ strconv.FormatFloat(*s.Rating,'f',2,64) }
+						}
+						| { *s.ReviewCount } ratings
+					</span>
+				} else {
+					<span class="badge bg-secondary">
+						No Ratings !
+					</span>
+				}
+			</div>
+			<div class="card-body">
+				if w.Cover!=nil {
+					<img src={ fmt.Sprintf("https://covers.openlibrary.org/b/id/%s-M.jpg", *w.Cover) } class="figure-img img-fluid rounded border float-start" alt="book cover" style="width: 25%, height: 40%"/>
+				} else {
+					<img src={ "https://openlibrary.org/images/icons/avatar_book-me.png" } class="figure-img img-fluid rounded border float-start" alt="book cover" style="width: 25%"/>
+				}
+				if w.Description!=nil {
+					<p class="card-text text-center">{ *w.Description }</p>
+				}
+			</div>
+		</div>
+	</div>
+}
