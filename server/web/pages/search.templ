@@ -20,7 +20,7 @@ func (s *Search) Render(w http.ResponseWriter, r *http.Request) {
 
 templ (s *Search) Html() {
 	@s.Base.Html() {
-		<div class="w-50 mx-auto reviewcard mb-1 mt-2">
+		<div>
 			for i:=range s.results {
 				@components.SearchItem(s.results[i], s.stats[i])
 			}

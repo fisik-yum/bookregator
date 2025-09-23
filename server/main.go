@@ -15,8 +15,6 @@ import (
 	"server/web"
 	"time"
 
-	"context"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -38,18 +36,11 @@ func init() {
 
 	I = index
 	// index all items on startup
-	log.Println("Refreshing bleve index")
-	I.Refresh(D)
-	log.Println("Refreshed bleve index")
-
-	log.Println("Running test query")
-	results, err := I.SearchItem("ancillary", context.Background())
-	if err != nil {
-		log.Panic(err)
-	}
-	for _, v := range results {
-		log.Printf("%s", v)
-	}
+	go func() {
+		log.Println("Refreshing bleve index")
+		I.Refresh(D)
+		log.Println("Refreshed bleve index")
+	}()
 
 }
 

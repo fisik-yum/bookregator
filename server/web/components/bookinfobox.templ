@@ -5,18 +5,18 @@ import "fmt"
 import "strconv"
 
 templ BookInfoBox(w db.Work, s db.Stat) {
-	<div class="text-center justify-content-center bookinfobox">
+	<div class="bookinfobox textcomponent container">
 		<figure class="figure">
 			if w.Cover!=nil {
 				<img src={ fmt.Sprintf("https://covers.openlibrary.org/b/id/%s-L.jpg", *w.Cover) } class="figure-img img-fluid rounded border" alt="book cover"/>
 			} else {
 				<img src={ "https://openlibrary.org/images/icons/avatar_book-lg.png" } class="figure-img img-fluid rounded border" alt="book cover"/>
 			}
-			<figcaption class="figure-caption">
+			<figcaption>
 				{ w.Title }
 			</figcaption>
 			if s.Rating!=nil && s.CiBound!=nil {
-				<span class="badge bg-secondary">
+				<span class="infobadge">
 					if *s.Rating<=float64(0) {
 						No Rating
 					} else {
@@ -26,7 +26,7 @@ templ BookInfoBox(w db.Work, s db.Stat) {
 					| { *s.ReviewCount } ratings
 				</span>
 			} else {
-				<span class="badge bg-secondary">
+				<span class="infobadge">
 					No Ratings !
 				</span>
 			}

@@ -7,12 +7,11 @@ import (
 )
 
 templ SearchItem(w db.Work, s db.Stat) {
-	<div class="container-fluid container-md">
-		<div class="card">
+		<div class="searchcard card textcomponent">
 			<div class="card-header">
 				<a href={ "book?olid=" + w.Olid }>{ w.Title }</a>
 				if s.Rating!=nil {
-					<span class="badge bg-secondary">
+					<span class="infobadge">
 						if *s.Rating<=float64(0) {
 							No Rating
 						} else {
@@ -21,12 +20,12 @@ templ SearchItem(w db.Work, s db.Stat) {
 						| { *s.ReviewCount } ratings
 					</span>
 				} else {
-					<span class="badge bg-secondary">
+					<span class="infobadge">
 						No Ratings !
 					</span>
 				}
 			</div>
-			<div class="card-body">
+			<div class="container">
 				if w.Cover!=nil {
 					<img src={ fmt.Sprintf("https://covers.openlibrary.org/b/id/%s-M.jpg", *w.Cover) } class="figure-img img-fluid rounded border float-start" alt="book cover" style="width: 25%, height: 40%"/>
 				} else {
@@ -37,5 +36,4 @@ templ SearchItem(w db.Work, s db.Stat) {
 				}
 			</div>
 		</div>
-	</div>
 }

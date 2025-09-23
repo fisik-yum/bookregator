@@ -5,25 +5,27 @@ import "strconv"
 import "strings"
 
 templ ReviewCard(r db.Review) {
-	<div class="card w-50 mx-auto reviewcard mb-1 mt-2" data-source={ r.Source } data-id={ r.ExternalID }>
+	<div class="reviewcard card textcomponent" data-source={ r.Source } data-id={ r.ExternalID }>
 		<div class="card-body">
-			<h4 class="class-title">{ r.Username }</h4>
-			<span class="badge bg-secondary">
-				{ r.Source } | 
-				if *r.Rating<=float64(0) || r.Rating==nil{
-					No Rating
-				} else {
-					{ strconv.FormatFloat(*r.Rating,'f',1,64) } out of 5
-				}
-			</span>
+			<h4 class="class-title">
+				{ r.Username }
+				<span class="infobadge">
+					{ r.Source } | 
+					if *r.Rating<=float64(0) || r.Rating==nil {
+						No Rating
+					} else {
+						{ strconv.FormatFloat(*r.Rating,'f',1,64) } out of 5
+					}
+				</span>
+			</h4>
 			<p class="card-text">
 				// TODO: try to optimize!
-                // NOTE: this is to preserve line breaks
-                for _,text:=range strings.Split(*r.Text,"\n"){
-                    <p class="reviewcard-para-text">
-                        {text}         
-                    </p>
-                }
+				// NOTE: this is to preserve line breaks
+				for _,text:=range strings.Split(*r.Text,"\n") {
+					<p class="reviewcard-para-text">
+						{ text }
+					</p>
+				}
 			</p>
 		</div>
 	</div>
