@@ -86,3 +86,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 	pages.NewIndex().Render(w, r)
 }
+
+func NFHandler(w http.ResponseWriter, r *http.Request) {
+	pages.NewNF().Render(w, r)
+}

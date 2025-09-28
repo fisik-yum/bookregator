@@ -13,18 +13,18 @@ import (
 	"server/web/shared"
 )
 
-type Index struct {
+type NF struct {
 	shared.Base
 }
 
-func NewIndex() *Index {
-	return &Index{shared.NewBase("Bookregator")}
+func NewNF() *NF {
+	return &NF{shared.NewBase("Bookregator")}
 }
-func (i *Index) Render(w http.ResponseWriter, r *http.Request) {
+func (i *NF) Render(w http.ResponseWriter, r *http.Request) {
 	i.Html().Render(r.Context(), w)
 }
 
-func (i *Index) Html() templ.Component {
+func (i *NF) Html() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -57,7 +57,7 @@ func (i *Index) Html() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"textcomponent\"><h1 class=\"\">bookregator</h1><p class=\"lead\">the book review aggregator </p><form class=\"\" method=\"get\" action=\"search\"><input class=\"\" name=\"query\" id=\"query\" type=\"query\" placeholder=\"Search Me!\"></form></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"textcomponent\"><h1 class=\"display-4\">bookregator</h1><p class=\"lead\">404: Page not found!</p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -18,13 +18,13 @@ func (i *Index) Render(w http.ResponseWriter, r *http.Request) {
 
 templ (i *Index) Html() {
 	@i.Base.Html() {
-		<div class="jumbotron w-50 mx-auto">
-			<h1 class="display-4">bookregator</h1>
+		<div class="textcomponent">
+			<h1 class="">bookregator</h1>
 			<p class="lead">
 				the book review aggregator 
 			</p>
-			<form class="d-flex" method="get" action="book">
-				<input class="form-control me-2" name="olid" id="olid" type="search" placeholder="Search OLID"/>
+			<form class="" method="get" action="search">
+				<input class="" name="query" id="query" type="query" placeholder="Search Me!"/>
 			</form>
 		</div>
 	}

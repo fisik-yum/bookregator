@@ -39,6 +39,12 @@ div.searchcard {
     text-align: justify;
 }
 
+div.searchcard img {
+    max-width: auto;
+    max-height: auto;
+}
+
+
 span.infobadge {
     border-style: solid;
     border-width: thin;
@@ -58,7 +64,7 @@ img {
 }
 
 .textcomponent {
-    max-width: 45%;
+    max-width: 60%;
     margin-top: 1em;
     margin-bottom: 1em;
 }
@@ -79,4 +85,20 @@ nav.navbar {
 
 nav.navbar div.navbaritem {
     float: left;
+}
+
+a:link {
+    color: cornflowerblue;
+}
+
+a:visited {
+    color: cornflowerblue;
+}
+
+a:hover {
+    color: cornflowerblue;
+}
+
+a:active {
+    color: cornflowerblue;
 }

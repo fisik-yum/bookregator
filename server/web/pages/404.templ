@@ -1,0 +1,28 @@
+package pages
+
+import (
+	"net/http"
+	"server/web/shared"
+)
+
+type NF struct {
+	shared.Base
+}
+
+func NewNF() *NF{
+	return &NF{shared.NewBase("Bookregator")}
+}
+func (i *NF) Render(w http.ResponseWriter, r *http.Request) {
+	i.Html().Render(r.Context(), w)
+}
+
+templ (i *NF) Html() {
+	@i.Base.Html() {
+		<div class="textcomponent">
+			<h1 class="display-4">bookregator</h1>
+			<p class="lead">
+            404: Page not found!
+			</p>
+		</div>
+	}
+}
