@@ -11,10 +11,10 @@ templ ReviewCard(r db.Review) {
 				{ r.Username }
 				<span class="infobadge">
 					{ r.Source } | 
-					if *r.Rating<=float64(0) || r.Rating==nil {
+					if r.Rating<=float64(0){
 						No Rating
 					} else {
-						{ strconv.FormatFloat(*r.Rating,'f',1,64) } out of 5
+						{ strconv.FormatFloat(r.Rating,'f',1,64) } out of 5
 					}
 				</span>
 			</h4>

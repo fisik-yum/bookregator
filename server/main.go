@@ -56,7 +56,7 @@ func main() {
 	// Bind only to localhost (127.0.0.1)
 	addr := "127.0.0.1:1024"
 	go func() {
-		log.Printf("bookregator listening on %s", addr)
+		log.Printf("bookregator listening on http://%s", addr)
 		if err := http.ListenAndServe(addr, r); err != nil {
 			log.Fatalf("Failed to start server: %v", err)
 		}

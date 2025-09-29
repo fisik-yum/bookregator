@@ -3,7 +3,6 @@ package components
 import "server/db"
 import "fmt"
 import "strconv"
-
 templ BookInfoBox(w db.Work, s db.Stat) {
 	<div class="bookinfobox textcomponent container">
 		<figure class="figure">
@@ -15,21 +14,15 @@ templ BookInfoBox(w db.Work, s db.Stat) {
 			<figcaption>
 				{ w.Title }
 			</figcaption>
-			if s.Rating!=nil && s.CiBound!=nil {
-				<span class="infobadge">
-					if *s.Rating<=float64(0) {
-						No Rating
-					} else {
-						{ strconv.FormatFloat(*s.Rating,'f',2,64) } ± 
-						{ strconv.FormatFloat(*s.CiBound,'f',2,64) } out of 5 (95% CI)
-					}
-					| { *s.ReviewCount } ratings
-				</span>
-			} else {
-				<span class="infobadge">
-					No Ratings !
-				</span>
-			}
+			<span class="infobadge">
+				if s.ReviewCount<=0 || s.AvgRating<float64(0) {
+					No Ratings!
+				} else {
+					{ strconv.FormatFloat(s.AvgRating,'f',2,64) } ± 
+					{ strconv.FormatFloat(s.CiBound,'f',2,64) } out of 5 (95% CI)
+					| { s.ReviewCount } ratings
+				}
+			</span>
 		</figure>
 	</div>
 }

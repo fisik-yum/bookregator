@@ -5,33 +5,44 @@ import (
 	"database/sql"
 	"errors"
 	"log"
-	"math"
 	"server/db"
+	"sort"
 	"strings"
 
 	gisbn "github.com/moraes/isbn"
+	"gonum.org/v1/gonum/stat"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
-func computeStats(datum db.RawStatsFromTableRow) db.Stat {
-	if datum.CountRatings < 1 {
-		return db.Stat{}
+func computeStats(datum []float64) db.Stat {
+	if len(datum) < 1 {
+		return db.Stat{
+			ReviewCount: 0,
+			AvgRating: -1,
+			MedRating: -1,
+			CiBound: -1,
+		}
 	}
-	stddev := math.Sqrt(*datum.SumRatingsSquared / float64(datum.CountRatings-1))
-	stderror := stddev / math.Sqrt(float64(datum.CountRatings))
+
+	sort.Float64s(datum)
+
+	review_count := float64(len(datum))
+	mean, stddev := stat.MeanStdDev(datum, nil)
+	stderror := stat.StdErr(stddev, review_count)
+	median := stat.Quantile(0.5, stat.Empirical, datum, nil)
 
 	dist := distuv.StudentsT{
-		Mu:    *datum.AvgRatings,
-		Sigma: stddev,
-		Nu:    float64(datum.CountRatings) - 1,
+		Mu:    mean,
+		Sigma: stderror,
+		Nu:    review_count - 1,
 	}
 
 	bound := dist.Quantile(0.975) * stderror
 	return db.Stat{
-		Olid:        datum.Olid,
-		ReviewCount: &datum.CountRatings,
-		Rating:      datum.AvgRatings,
-		CiBound:     &bound,
+		ReviewCount:           int64(review_count),
+		AvgRating:             mean,
+		MedRating:             median,
+		CiBound:               bound,
 	}
 }
 
@@ -61,14 +72,21 @@ func InsertRoute(D *sql.DB, Q db.Queries, ctx context.Context, val *db.InsertISB
 
 func MassRefreshStats(D *sql.DB, Q db.Queries, ctx context.Context) error {
 	rows, err := D.QueryContext(ctx, `SELECT
-    		olid AS olid,
-    		COUNT(rating) AS count_ratings,
-    		AVG(rating) AS avg_ratings,
-    		SUM(rating * rating) AS sum_ratings_squared
-			FROM reviews GROUP BY olid;
-		`)
+    		olid FROM works`)
 	if err != nil {
 		log.Println(err)
+	}
+
+	var olids []string
+	for rows.Next() {
+		var olid string
+		if err := rows.Scan(&olid); err != nil {
+			return err
+		}
+		olids = append(olids, olid)
+	}
+	if err := rows.Close(); err != nil {
+		return err
 	}
 
 	// run transaction for atomicity and performance
@@ -80,20 +98,17 @@ func MassRefreshStats(D *sql.DB, Q db.Queries, ctx context.Context) error {
 
 	qtx := Q.WithTx(tx)
 
-	for rows.Next() {
-		s := db.RawStatsFromTableRow{}
-		err = rows.Scan(&s.Olid, &s.CountRatings, &s.AvgRatings, &s.SumRatingsSquared)
+	for _, k := range olids {
+		d, err := qtx.RawStatsFromTable(ctx, k)
 		if err != nil {
-			log.Println(err)
-			continue
+			return err
 		}
-		log.Println(s.Olid)
-		err = qtx.InsertStat(ctx, db.InsertStatParams(computeStats(s)))
-		if err != nil {
-			log.Println(err)
-			continue
-		}
+		s := computeStats(d)
+		s.Olid = k
+		qtx.InsertStat(ctx, db.InsertStatParams(s))
+		log.Printf("Updated statistics for book %s",k)
 	}
+
 	err = tx.Commit()
 	if err != nil {
 		return err

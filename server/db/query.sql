@@ -22,17 +22,14 @@ SELECT * FROM stats WHERE olid = ? LIMIT 1;
 -- name: GetRandomWork :one
 SELECT olid FROM works ORDER BY RANDOM() LIMIT 1;
 
--- name: RawStatsFromTable :one
+-- name: RawStatsFromTable :many
 SELECT
-    olid AS olid,
-    COUNT(rating) AS count_ratings,
-    AVG(rating) AS avg_ratings,
-    SUM(rating * rating) AS sum_ratings_squared
+    rating
 FROM reviews
 WHERE
     olid = sqlc.arg(olid) AND rating != -1;
 
 -- name: InsertStat :exec
-INSERT  INTO stats (olid, review_count, rating, ci_bound) VALUES (?, ?, ?, ?)
-ON CONFLICT(olid) DO UPDATE SET review_count=excluded.review_count, rating=excluded.rating, ci_bound=excluded.ci_bound
+INSERT  INTO stats (olid, review_count, avg_rating, med_rating, ci_bound) VALUES (?, ?, ?, ?, ?)
+ON CONFLICT(olid) DO UPDATE SET review_count=excluded.review_count, avg_rating=excluded.avg_rating, med_rating=excluded.med_rating, ci_bound=excluded.ci_bound
 ;

@@ -10,20 +10,21 @@ type Isbn struct {
 }
 
 type Review struct {
-	ReviewID   int64    `json:"review_id"`
-	Olid       string   `json:"olid"`
-	Source     string   `json:"source"`
-	ExternalID string   `json:"external_id"`
-	Username   string   `json:"username"`
-	Rating     *float64 `json:"rating"`
-	Text       *string  `json:"text"`
+	ReviewID   int64   `json:"review_id"`
+	Olid       string  `json:"olid"`
+	Source     string  `json:"source"`
+	ExternalID string  `json:"external_id"`
+	Username   string  `json:"username"`
+	Rating     float64 `json:"rating"`
+	Text       *string `json:"text"`
 }
 
 type Stat struct {
-	Olid        string   `json:"olid"`
-	ReviewCount *int64   `json:"review_count"`
-	Rating      *float64 `json:"rating"`
-	CiBound     *float64 `json:"ci_bound"`
+	Olid        string  `json:"olid"`
+	ReviewCount int64   `json:"review_count"`
+	AvgRating   float64 `json:"avg_rating"`
+	MedRating   float64 `json:"med_rating"`
+	CiBound     float64 `json:"ci_bound"`
 }
 
 type Work struct {

@@ -72,7 +72,7 @@ func (q *Queries) GetRandomWork(ctx context.Context) (string, error) {
 }
 
 const getStats = `-- name: GetStats :one
-SELECT olid, review_count, rating, ci_bound FROM stats WHERE olid = ? LIMIT 1
+SELECT olid, review_count, avg_rating, med_rating, ci_bound FROM stats WHERE olid = ? LIMIT 1
 `
 
 func (q *Queries) GetStats(ctx context.Context, olid string) (Stat, error) {
@@ -81,7 +81,8 @@ func (q *Queries) GetStats(ctx context.Context, olid string) (Stat, error) {
 	err := row.Scan(
 		&i.Olid,
 		&i.ReviewCount,
-		&i.Rating,
+		&i.AvgRating,
+		&i.MedRating,
 		&i.CiBound,
 	)
 	return i, err
@@ -123,12 +124,12 @@ INSERT INTO reviews ( olid, source, external_id, username, rating, text) values 
 `
 
 type InsertReviewParams struct {
-	Olid       string   `json:"olid"`
-	Source     string   `json:"source"`
-	ExternalID string   `json:"external_id"`
-	Username   string   `json:"username"`
-	Rating     *float64 `json:"rating"`
-	Text       *string  `json:"text"`
+	Olid       string  `json:"olid"`
+	Source     string  `json:"source"`
+	ExternalID string  `json:"external_id"`
+	Username   string  `json:"username"`
+	Rating     float64 `json:"rating"`
+	Text       *string `json:"text"`
 }
 
 func (q *Queries) InsertReview(ctx context.Context, arg InsertReviewParams) error {
@@ -144,22 +145,24 @@ func (q *Queries) InsertReview(ctx context.Context, arg InsertReviewParams) erro
 }
 
 const insertStat = `-- name: InsertStat :exec
-INSERT  INTO stats (olid, review_count, rating, ci_bound) VALUES (?, ?, ?, ?)
-ON CONFLICT(olid) DO UPDATE SET review_count=excluded.review_count, rating=excluded.rating, ci_bound=excluded.ci_bound
+INSERT  INTO stats (olid, review_count, avg_rating, med_rating, ci_bound) VALUES (?, ?, ?, ?, ?)
+ON CONFLICT(olid) DO UPDATE SET review_count=excluded.review_count, avg_rating=excluded.avg_rating, med_rating=excluded.med_rating, ci_bound=excluded.ci_bound
 `
 
 type InsertStatParams struct {
-	Olid        string   `json:"olid"`
-	ReviewCount *int64   `json:"review_count"`
-	Rating      *float64 `json:"rating"`
-	CiBound     *float64 `json:"ci_bound"`
+	Olid        string  `json:"olid"`
+	ReviewCount int64   `json:"review_count"`
+	AvgRating   float64 `json:"avg_rating"`
+	MedRating   float64 `json:"med_rating"`
+	CiBound     float64 `json:"ci_bound"`
 }
 
 func (q *Queries) InsertStat(ctx context.Context, arg InsertStatParams) error {
 	_, err := q.db.ExecContext(ctx, insertStat,
 		arg.Olid,
 		arg.ReviewCount,
-		arg.Rating,
+		arg.AvgRating,
+		arg.MedRating,
 		arg.CiBound,
 	)
 	return err
@@ -188,32 +191,33 @@ func (q *Queries) InsertWork(ctx context.Context, arg InsertWorkParams) error {
 	return err
 }
 
-const rawStatsFromTable = `-- name: RawStatsFromTable :one
+const rawStatsFromTable = `-- name: RawStatsFromTable :many
 SELECT
-    olid AS olid,
-    COUNT(rating) AS count_ratings,
-    AVG(rating) AS avg_ratings,
-    SUM(rating * rating) AS sum_ratings_squared
+    rating
 FROM reviews
 WHERE
     olid = ?1 AND rating != -1
 `
 
-type RawStatsFromTableRow struct {
-	Olid              string   `json:"olid"`
-	CountRatings      int64    `json:"count_ratings"`
-	AvgRatings        *float64 `json:"avg_ratings"`
-	SumRatingsSquared *float64 `json:"sum_ratings_squared"`
-}
-
-func (q *Queries) RawStatsFromTable(ctx context.Context, olid string) (RawStatsFromTableRow, error) {
-	row := q.db.QueryRowContext(ctx, rawStatsFromTable, olid)
-	var i RawStatsFromTableRow
-	err := row.Scan(
-		&i.Olid,
-		&i.CountRatings,
-		&i.AvgRatings,
-		&i.SumRatingsSquared,
-	)
-	return i, err
+func (q *Queries) RawStatsFromTable(ctx context.Context, olid string) ([]float64, error) {
+	rows, err := q.db.QueryContext(ctx, rawStatsFromTable, olid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []float64
+	for rows.Next() {
+		var rating float64
+		if err := rows.Scan(&rating); err != nil {
+			return nil, err
+		}
+		items = append(items, rating)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

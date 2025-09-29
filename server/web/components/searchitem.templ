@@ -10,20 +10,14 @@ templ SearchItem(w db.Work, s db.Stat) {
 	<div class="searchcard card textcomponent">
 		<div class="card-header">
 			<a href={ "book?olid=" + w.Olid }>{ w.Title }</a>
-			if s.Rating!=nil {
-				<span class="infobadge">
-					if *s.Rating<=float64(0) {
-						No Rating
-					} else {
-						{ strconv.FormatFloat(*s.Rating,'f',2,64) }
-					}
-					| { *s.ReviewCount } ratings
-				</span>
-			} else {
-				<span class="infobadge">
-					No Ratings !
-				</span>
-			}
+			<span class="infobadge">
+				if s.AvgRating<=0 {
+					No Rating
+				} else {
+					{ strconv.FormatFloat(s.AvgRating,'f',2,64) }
+				}
+				| { s.ReviewCount } ratings
+			</span>
 		</div>
 		<div class="container">
 			if w.Cover!=nil {

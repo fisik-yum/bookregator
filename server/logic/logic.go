@@ -15,11 +15,13 @@ func ReviewSingle(D *sql.DB, Q db.Queries, ctx context.Context, extrrev db.Inser
 	}
 	log.Printf("Review for Book %s; User %s inserted", extrrev.Olid, extrrev.Username)
 	// update statistics
-	s, err := Q.RawStatsFromTable(ctx, extrrev.Olid)
+	d, err := Q.RawStatsFromTable(ctx, extrrev.Olid)
 	if err != nil {
 		return err
 	}
-	err = Q.InsertStat(ctx, db.InsertStatParams(computeStats(s)))
+	s:=computeStats(d)
+	s.Olid=extrrev.Olid
+	err = Q.InsertStat(ctx, db.InsertStatParams(s))
 
 	if err != nil {
 		return err
@@ -63,12 +65,16 @@ func ReviewMultiple(D *sql.DB, Q db.Queries, ctx context.Context, reviews []db.I
 
 	// update statistics
 	for olid := range olidmap {
-		s, err := qtx.RawStatsFromTable(ctx, olid)
+		d, err := qtx.RawStatsFromTable(ctx, olid)
 		if err != nil {
 			return err
 		}
-
-		qtx.InsertStat(ctx, db.InsertStatParams(computeStats(s)))
+		s:=computeStats(d)
+		s.Olid=olid
+		err=qtx.InsertStat(ctx, db.InsertStatParams(s))
+		if err != nil {
+			return err
+		}
 	}
 	tx.Commit()
 	return nil
