@@ -25,6 +25,7 @@ div.reviewcard {
     padding: 0.25em;
     border-style: solid;
     border-width: thin;
+    text-align: left;
 }
 
 div.bookinfobox {
@@ -42,6 +43,10 @@ div.searchcard {
 div.searchcard img {
     max-width: auto;
     max-height: auto;
+}
+
+div.descriptioncard {
+    text-align: left;
 }
 
 
@@ -64,7 +69,7 @@ img {
 }
 
 .textcomponent {
-    max-width: 60%;
+    max-width: 80%;
     margin-top: 1em;
     margin-bottom: 1em;
 }
@@ -73,7 +78,13 @@ img {
     align-items: center;
     justify-content: center;
     display: flex;
+}
 
+@media (max-width: 1200px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
 nav.navbar {

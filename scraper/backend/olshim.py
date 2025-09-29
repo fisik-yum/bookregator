@@ -10,7 +10,11 @@ def ISBNtoOLIDW(isbn_val: str) -> (str, str):
     if not islib.is_isbn10(isbn_val) and not islib.is_isbn13(isbn_val):
         raise Exception("Invalid ISBN")
     isbn_val = islib.to_isbn13(isbn_val)
-    return (isbn_val, ol.Edition.get(isbn=isbn_val).work_olid)
+    try:
+        ret =(isbn_val, ol.Edition.get(isbn=isbn_val).work_olid)
+        return ret
+    except:
+        raise Exception("Invalid Attr")
 
 
 def GenerateWorkData(olidw: str) -> data.WorkData:

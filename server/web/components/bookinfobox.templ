@@ -3,6 +3,7 @@ package components
 import "server/db"
 import "fmt"
 import "strconv"
+
 templ BookInfoBox(w db.Work, s db.Stat) {
 	<div class="bookinfobox textcomponent container">
 		<figure class="figure">
@@ -24,5 +25,10 @@ templ BookInfoBox(w db.Work, s db.Stat) {
 				}
 			</span>
 		</figure>
+		if w.Description!=nil {
+			<div class="descriptioncard container">
+				{ *w.Description }
+			</div>
+		}
 	</div>
 }

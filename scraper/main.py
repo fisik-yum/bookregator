@@ -11,9 +11,17 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    books = ["9780375822070", " 9780765348784", "9781250887672"]
-    for book in books:
-        ScrapeAndPost(book)
+    with open("isbns.txt") as f:
+        lc=0
+        for l in f:
+            print(f"Working on line {lc}")
+            book=l.strip(" \n\r")
+            try:
+                ScrapeAndPost(book)
+            except:
+                lc+=1
+                continue
+            lc+=1
 
 
 def ScrapeAndPost(isbn: str):
