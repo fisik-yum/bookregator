@@ -18,9 +18,9 @@ func computeStats(datum []float64) db.Stat {
 	if len(datum) < 1 {
 		return db.Stat{
 			ReviewCount: 0,
-			AvgRating: -1,
-			MedRating: -1,
-			CiBound: -1,
+			AvgRating:   -1,
+			MedRating:   -1,
+			CiBound:     -1,
 		}
 	}
 
@@ -39,10 +39,10 @@ func computeStats(datum []float64) db.Stat {
 
 	bound := dist.Quantile(0.975) * stderror
 	return db.Stat{
-		ReviewCount:           int64(review_count),
-		AvgRating:             mean,
-		MedRating:             median,
-		CiBound:               bound,
+		ReviewCount: int64(review_count),
+		AvgRating:   mean,
+		MedRating:   median,
+		CiBound:     bound,
 	}
 }
 
@@ -106,7 +106,7 @@ func MassRefreshStats(D *sql.DB, Q db.Queries, ctx context.Context) error {
 		s := computeStats(d)
 		s.Olid = k
 		qtx.InsertStat(ctx, db.InsertStatParams(s))
-		log.Printf("Updated statistics for book %s",k)
+		log.Printf("Updated statistics for book %s", k)
 	}
 
 	err = tx.Commit()

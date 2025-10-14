@@ -19,8 +19,8 @@ func ReviewSingle(D *sql.DB, Q db.Queries, ctx context.Context, extrrev db.Inser
 	if err != nil {
 		return err
 	}
-	s:=computeStats(d)
-	s.Olid=extrrev.Olid
+	s := computeStats(d)
+	s.Olid = extrrev.Olid
 	err = Q.InsertStat(ctx, db.InsertStatParams(s))
 
 	if err != nil {
@@ -69,9 +69,9 @@ func ReviewMultiple(D *sql.DB, Q db.Queries, ctx context.Context, reviews []db.I
 		if err != nil {
 			return err
 		}
-		s:=computeStats(d)
-		s.Olid=olid
-		err=qtx.InsertStat(ctx, db.InsertStatParams(s))
+		s := computeStats(d)
+		s.Olid = olid
+		err = qtx.InsertStat(ctx, db.InsertStatParams(s))
 		if err != nil {
 			return err
 		}
