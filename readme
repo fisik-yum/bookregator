@@ -1,2 +1,8 @@
+Bookregator: Book review aggregator
+--------
+--------
 TODO:
 - ACME client registration
+- Work on integrating scraper with web service
+--------
+This software is published under the AGPLv3 License. This means that you must comply with all of its provisions when distributing or modifying source and binaries.
