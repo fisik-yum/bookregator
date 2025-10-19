@@ -5,6 +5,7 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -23,25 +24,33 @@ var D *sql.DB
 var Q db.Queries
 var I *search.SearchMachine
 
+// configuration variables
+
+var databaseLocation string // database location
+var skipSearchIndex bool // whether to skip indexing
+var basicAuthUser string // http basic auth username
+var basicAuthPass string // http basic auth password
+
+
 func init() {
+	flag.StringVar(&databaseLocation, "db", "", "location of database file")
+	flag.BoolVar(&skipSearchIndex, "skipindex", false, "skip search indexing")
+	flag.StringVar(&basicAuthUser, "user", "admin", "http basic auth username")
+	flag.StringVar(&basicAuthPass, "pass", "opensesame", "http basic auth password")
+
+	flag.Parse()
+
 	// initialize DB connection
 	log.Println("Opening database connection")
-	D, Q = db.DBinit("test.sqlite3")
+	D, Q = db.DBinit(databaseLocation)
 	// open up bleve index
 	log.Println("Opening bleve index")
-	index, err := search.NewSearchMachine("test.bleve")
+	index, err := search.NewSearchMachine("search.bleve")
 	if err != nil {
 		log.Panic(err)
 	}
 
 	I = index
-	// index all items on startup
-	go func() {
-		log.Println("Refreshing bleve index")
-		I.Refresh(D)
-		log.Println("Refreshed bleve index")
-	}()
-
 }
 
 func main() {
@@ -62,19 +71,21 @@ func main() {
 		}
 	}()
 
-	// run refresh in parallel
-	ticker := time.NewTicker(30 * time.Minute)
-	go func() {
-		for {
-			<-ticker.C
-			log.Println("Refreshing bleve index")
-			I.Refresh(D)
-			log.Println("Refreshed bleve index")
-		}
-	}()
+	if !skipSearchIndex {
+		// run refresh in parallel
+		ticker := time.NewTicker(30 * time.Minute)
+		go func() {
+			for {
+				log.Println("Refreshing bleve index")
+				I.Refresh(D)
+				log.Println("Refreshed bleve index")
+				<-ticker.C
+			}
+		}()
+		defer ticker.Stop()
+	}
 
 	defer I.Close()
-	defer ticker.Stop()
 
 	// Ensure that we can shutdown gracefully
 	stop := make(chan os.Signal, 1)

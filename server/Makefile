@@ -4,7 +4,7 @@ build-test:
 	templ generate
 	cd db;sqlc generate
 	go build -v && mv server artifacts/ 
-	cd artifacts;./server
+	cd artifacts;./server -db test.sqlite3 -user test -pass test
 generate:
 	templ generate
 	cd db;sqlc generate

@@ -33,3 +33,6 @@ WHERE
 INSERT  INTO stats (olid, review_count, avg_rating, med_rating, ci_bound) VALUES (?, ?, ?, ?, ?)
 ON CONFLICT(olid) DO UPDATE SET review_count=excluded.review_count, avg_rating=excluded.avg_rating, med_rating=excluded.med_rating, ci_bound=excluded.ci_bound
 ;
+
+-- name: GetISBNRoute :one
+SELECT COUNT(*) FROM isbns WHERE isbn = 1 LIMIT 1;

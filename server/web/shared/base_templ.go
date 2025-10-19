@@ -99,7 +99,7 @@ func (b Base) Html() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</main><div id=\"toast-container\"></div></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</main><footer><hr><div class=\"container\"><a class=\"footerlink\" href=\"/about\">About</a> <a class=\"footerlink\" href=\"/\">Home</a> <a class=\"footerlink\" href=\"/add\">Add a book</a></div></footer><div id=\"toast-container\"></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

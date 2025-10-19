@@ -15,15 +15,10 @@ templ BookInfoBox(w db.Work, s db.Stat) {
 			<figcaption>
 				{ w.Title }
 			</figcaption>
-			<span class="infobadge">
-				if s.ReviewCount<=0 || s.AvgRating<float64(0) {
-					No Ratings!
-				} else {
-					{ strconv.FormatFloat(s.AvgRating,'f',2,64) } ± 
-					{ strconv.FormatFloat(s.CiBound,'f',2,64) } out of 5 (95% CI)
-					| { s.ReviewCount } ratings
-				}
-			</span>
+			<div class="container">
+				@statsBadgeMean(s)
+				@statsBadgeMedian(s)
+			</div>
 		</figure>
 		if w.Description!=nil {
 			<div class="descriptioncard container">
@@ -31,4 +26,24 @@ templ BookInfoBox(w db.Work, s db.Stat) {
 			</div>
 		}
 	</div>
+}
+
+templ statsBadgeMean(s db.Stat) {
+	<span class="infobadge">
+		if s.ReviewCount<=0 || s.AvgRating<float64(0) {
+			No Ratings!
+		} else {
+			{ strconv.FormatFloat(s.AvgRating,'f',2,64) } ± 
+			{ strconv.FormatFloat(s.CiBound,'f',2,64) } out of 5 (95% CI)
+			| { s.ReviewCount } ratings
+		}
+	</span>
+}
+
+templ statsBadgeMedian(s db.Stat) {
+	if s.ReviewCount<=0 || s.MedRating>=0 {
+		<span class="infobadge">
+			Median: { strconv.FormatFloat(s.MedRating,'f',2,64) }
+		</span>
+	}
 }

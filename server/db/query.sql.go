@@ -9,6 +9,19 @@ import (
 	"context"
 )
 
+const getISBNRoute = `-- name: GetISBNRoute :one
+;
+
+SELECT COUNT(*) FROM isbns WHERE isbn = 1 LIMIT 1
+`
+
+func (q *Queries) GetISBNRoute(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getISBNRoute)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const getNReviewsByOLID = `-- name: GetNReviewsByOLID :many
 SELECT review_id, olid, source, external_id, username, rating, text FROM reviews WHERE olid = ? ORDER BY RANDOM() LIMIT ?
 `
