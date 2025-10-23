@@ -59,7 +59,7 @@ func main() {
 	r.Use(middleware.CleanPath)
 
 	// manage global mux
-	r.Mount("/api", api.Router(D, Q))
+	r.Mount("/api", api.Router(D, Q,basicAuthUser, basicAuthPass))
 	r.Mount("/", web.Router(D, Q, *I))
 
 	// Bind only to localhost (127.0.0.1)
