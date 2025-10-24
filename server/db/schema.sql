@@ -4,9 +4,7 @@ CREATE TABLE works (
     author TEXT,
     cover TEXT,
     description TEXT
-);
-
-CREATE TABLE isbns (
+); CREATE TABLE isbns (
     isbn TEXT PRIMARY KEY,
     olid TEXT NOT NULL REFERENCES works(olid),
     UNIQUE(isbn, olid)
@@ -30,4 +28,16 @@ CREATE TABLE stats (
     med_rating REAL NOT NULL,
     ci_bound REAL NOT NULL,
     UNIQUE(olid)
+);
+
+CREATE TABLE genres (
+    genre_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    genre_name VARCHAR(20) UNIQUE NOT NULL,
+    UNIQUE(genre_name)
+);
+
+CREATE TABLE bookgenres (
+    olid TEXT NOT NULL REFERENCES works(olid),
+    genre_id INTEGER NOT NULL REFERENCES genres(genre_id),
+    UNIQUE(olid, genre_id)
 );

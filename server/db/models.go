@@ -4,6 +4,16 @@
 
 package db
 
+type Bookgenre struct {
+	Olid    string `json:"olid"`
+	GenreID int64  `json:"genre_id"`
+}
+
+type Genre struct {
+	GenreID   int64  `json:"genre_id"`
+	GenreName string `json:"genre_name"`
+}
+
 type Isbn struct {
 	Isbn string `json:"isbn"`
 	Olid string `json:"olid"`
