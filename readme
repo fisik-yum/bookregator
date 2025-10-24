@@ -1,8 +1,11 @@
 Bookregator: Book review aggregator
 --------
+https://book.buckminsterfullerene.net
 --------
 TODO:
-- ACME client registration
+- Functioning genres system
+- Recommendation engine
 - Work on integrating scraper with web service
+- Switch database backend to PostgreSQL or MariaDB (This will involve migrating the existing databse)
 --------
 This software is published under the AGPLv3 License. This means that you must comply with all of its provisions when distributing or modifying source and binaries.
