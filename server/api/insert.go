@@ -13,7 +13,7 @@ import (
 )
 
 // single book insert mechanism
-func InsertWorkHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Request) {
+func InsertWorkHandler(D *sql.DB, Q db.Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		defer r.Body.Close()
@@ -35,7 +35,7 @@ func InsertWorkHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *h
 }
 
 // Single review insert mechanism
-func InsertReviewSingleHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Request) {
+func InsertReviewSingleHandler(D *sql.DB, Q db.Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -71,7 +71,7 @@ func InsertReviewSingleHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWrit
 }
 
 // Multiple review insert mechanism
-func InsertReviewMultipleHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Request) {
+func InsertReviewMultipleHandler(D *sql.DB, Q db.Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// transactions with sqlc
 		if r.Method != http.MethodPost {
@@ -100,7 +100,7 @@ func InsertReviewMultipleHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWr
 /*
 this handler simply exists for debugging. we force a refresh of all statistics
 */
-func UpdateStatGlobal(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Request) {
+func UpdateStatGlobal(D *sql.DB, Q db.Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := logic.MassRefreshStats(D, Q, r.Context())
 		if err != nil {
@@ -113,7 +113,7 @@ func UpdateStatGlobal(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *ht
 /*
 Extract ISBN, and auto-routes it. Data is sent as JSON,
 */
-func InsertRouteHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Request) {
+func InsertRouteHandler(D *sql.DB, Q db.Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -136,5 +136,11 @@ func InsertRouteHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *
 		}
 
 		log.Printf("Book routed successfully: %s -> %s", val.Isbn, val.Olid)
+	}
+}
+
+func InsertGenreHandler(D *sql.DB, Q db.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		genre_list:=new([]db.Genre)
 	}
 }

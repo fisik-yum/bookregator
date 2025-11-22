@@ -35,7 +35,7 @@ ON CONFLICT(olid) DO UPDATE SET review_count=excluded.review_count, avg_rating=e
 ;
 
 -- name: ISBNExistsInt :one
-SELECT COUNT(*) FROM isbns WHERE isbn = 1 LIMIT 1;
+SELECT COUNT(*) FROM isbns WHERE isbn = ? LIMIT 1;
 
--- name: GetGenres :one
-SELECT works.*, reviews.username FROM works INNER JOIN reviews ON works.olid=reviews.olid WHERE works.olid=sqlc.arg(olid)
+-- name: GetGenresByOLID :many
+SELECT  genre_name FROM bookgenres INNER JOIN genres ON bookgenres.genre_id=genres.genre_id WHERE bookgenres.olid=sqlc.arg(olid)

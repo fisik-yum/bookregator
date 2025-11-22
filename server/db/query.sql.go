@@ -9,6 +9,33 @@ import (
 	"context"
 )
 
+const getGenresByOLID = `-- name: GetGenresByOLID :many
+SELECT  genre_name FROM bookgenres INNER JOIN genres ON bookgenres.genre_id=genres.genre_id WHERE bookgenres.olid=?1
+`
+
+func (q *Queries) GetGenresByOLID(ctx context.Context, olid string) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getGenresByOLID, olid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var genre_name string
+		if err := rows.Scan(&genre_name); err != nil {
+			return nil, err
+		}
+		items = append(items, genre_name)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getNReviewsByOLID = `-- name: GetNReviewsByOLID :many
 SELECT review_id, olid, source, external_id, username, rating, text FROM reviews WHERE olid = ? ORDER BY RANDOM() LIMIT ?
 `
@@ -108,11 +135,11 @@ func (q *Queries) GetWorkByOLID(ctx context.Context, olid string) (Work, error) 
 const iSBNExistsInt = `-- name: ISBNExistsInt :one
 ;
 
-SELECT COUNT(*) FROM isbns WHERE isbn = 1 LIMIT 1
+SELECT COUNT(*) FROM isbns WHERE isbn = ? LIMIT 1
 `
 
-func (q *Queries) ISBNExistsInt(ctx context.Context) (int64, error) {
-	row := q.db.QueryRowContext(ctx, iSBNExistsInt)
+func (q *Queries) ISBNExistsInt(ctx context.Context, isbn string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, iSBNExistsInt, isbn)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
