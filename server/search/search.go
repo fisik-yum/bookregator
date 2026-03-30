@@ -45,7 +45,7 @@ func (s *SearchMachine) AddItem(b BookModel) error {
 
 // Search with book field. Wrapper around index.SearchInContext()
 func (s *SearchMachine) SearchItem(ident string, ctx context.Context) ([]string, error) {
-	q := bleve.NewMatchPhraseQuery(ident)
+	q := bleve.NewMatchQuery(ident)
 	q.SetFuzziness(2)
 	r, err := s.index.SearchInContext(ctx, bleve.NewSearchRequest(q))
 	if err != nil {
