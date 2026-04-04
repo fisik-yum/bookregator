@@ -19,6 +19,11 @@ type Isbn struct {
 	Olid string `json:"olid"`
 }
 
+type OverallRating struct {
+	Olid string   `json:"olid"`
+	Avg  *float64 `json:"avg"`
+}
+
 type Review struct {
 	ReviewID   int64   `json:"review_id"`
 	Olid       string  `json:"olid"`

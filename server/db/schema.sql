@@ -1,4 +1,4 @@
-CREATE TABLE works (
+CREATE TABLE if not exists works (
     olid TEXT PRIMARY KEY,
     title TEXT NOT NULL,
     author TEXT,
@@ -10,7 +10,7 @@ CREATE TABLE works (
     UNIQUE(isbn, olid)
 );
 
-CREATE TABLE reviews (
+CREATE TABLE if not exists reviews (
     review_id INTEGER PRIMARY KEY AUTOINCREMENT,
     olid TEXT NOT NULL REFERENCES works(olid),
     source TEXT NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE reviews (
     UNIQUE(external_id, text, source, username)
 );
 
-CREATE TABLE stats (
+CREATE TABLE if not exists stats (
     olid TEXT PRIMARY KEY references works(olid),
     review_count INTEGER NOT NULL,
     avg_rating REAL NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE stats (
     UNIQUE(olid)
 );
 
-CREATE TABLE genres (
+CREATE TABLE if not exists genres (
     genre_id INTEGER PRIMARY KEY AUTOINCREMENT,
     genre_name VARCHAR(20) UNIQUE NOT NULL,
     UNIQUE(genre_name)
@@ -41,3 +41,6 @@ CREATE TABLE bookgenres (
     genre_id INTEGER NOT NULL REFERENCES genres(genre_id),
     UNIQUE(olid, genre_id)
 );
+
+CREATE VIEW overall_rating as
+SELECT r.olid,AVG(r.positive) FROM REVIEWS r GROUP BY r.olid;

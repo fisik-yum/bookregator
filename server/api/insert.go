@@ -141,6 +141,6 @@ func InsertRouteHandler(D *sql.DB, Q db.Queries) http.HandlerFunc {
 
 func InsertGenreHandler(D *sql.DB, Q db.Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		genre_list:=new([]db.Genre)
+		//genre_list:=new([]db.Genre)
 	}
 }
