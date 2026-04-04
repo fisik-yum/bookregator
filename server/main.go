@@ -18,31 +18,30 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 var D *sql.DB
 var Q db.Queries
 var I *search.SearchMachine
 
-// configuration variables
-
-var databaseLocation string // database location
-var skipSearchIndex bool // whether to skip indexing
-var basicAuthUser string // http basic auth username
-var basicAuthPass string // http basic auth password
-
+// configuration 
+var configLocation string // config location
+var cfg serverConfig
 
 func init() {
-	flag.StringVar(&databaseLocation, "db", "", "location of database file")
-	flag.BoolVar(&skipSearchIndex, "skipindex", false, "skip search indexing")
-	flag.StringVar(&basicAuthUser, "user", "admin", "http basic auth username")
-	flag.StringVar(&basicAuthPass, "pass", "opensesame", "http basic auth password")
-
+	flag.StringVar(&configLocation, "c", "", "location of config file")
 	flag.Parse()
+
+	err:=cleanenv.ReadConfig(configLocation,&cfg)
+	if err != nil {
+		log.Panic(err)
+	}
+	log.Println(cfg)
 
 	// initialize DB connection
 	log.Println("Opening database connection")
-	D, Q = db.DBinit(databaseLocation)
+	D, Q = db.DBinit(cfg.DatabaseLocation)
 	// open up bleve index
 	log.Println("Opening bleve index")
 	index, err := search.NewSearchMachine("search.bleve")
@@ -59,7 +58,7 @@ func main() {
 	r.Use(middleware.CleanPath)
 
 	// manage global mux
-	r.Mount("/api", api.Router(D, Q,basicAuthUser, basicAuthPass))
+	r.Mount("/api", api.Router(D, Q,cfg.HTTPUser, cfg.HTTPPass))
 	r.Mount("/", web.Router(D, Q, *I))
 
 	// Bind only to localhost (127.0.0.1)
@@ -71,7 +70,7 @@ func main() {
 		}
 	}()
 
-	if !skipSearchIndex {
+	if !cfg.SkipIndexing{
 		// run refresh in parallel
 		ticker := time.NewTicker(30 * time.Minute)
 		go func() {

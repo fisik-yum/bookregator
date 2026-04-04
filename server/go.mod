@@ -7,6 +7,7 @@ require (
 	github.com/a-h/templ v0.3.943
 	github.com/blevesearch/bleve/v2 v2.5.3
 	github.com/go-chi/chi/v5 v5.2.3
+	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/mattn/go-sqlite3 v1.14.32
 	github.com/moraes/isbn v0.0.0-20151007102746-e6388fb1bfd5
 	github.com/tdewolff/minify v2.3.6+incompatible
@@ -14,6 +15,7 @@ require (
 )
 
 require (
+	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/RoaringBitmap/roaring/v2 v2.4.5 // indirect
 	github.com/bits-and-blooms/bitset v1.22.0 // indirect
 	github.com/blevesearch/bleve_index_api v1.2.8 // indirect
@@ -35,6 +37,7 @@ require (
 	github.com/blevesearch/zapx/v16 v16.2.4 // indirect
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/json-iterator/go v0.0.0-20171115153421-f7279a603ede // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/tdewolff/parse v2.3.4+incompatible // indirect
@@ -42,4 +45,6 @@ require (
 	go.etcd.io/bbolt v1.4.0 // indirect
 	golang.org/x/sync v0.17.0 // indirect
 	golang.org/x/sys v0.36.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
+	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3 // indirect
 )
