@@ -1,0 +1,4 @@
+database_location: test.sqlite3
+skip_indexing: false
+http_user: admin
+http_pass: opensesame
