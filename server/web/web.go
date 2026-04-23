@@ -24,7 +24,7 @@ func Router(D *sql.DB, Q db.Queries, S search.SearchMachine) chi.Router {
 	web.HandleFunc("/random", RandomBookHandler(D, Q))
 	web.HandleFunc("/search", SearchHandler(D, Q, S))
 	web.Mount("/static", staticRouter(0))
-	web.NotFound(NFHandler)
+	web.NotFound(PageNotFoundHandler)
 	return web
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"server/common"
 
 	"github.com/blevesearch/bleve/v2"
 )
@@ -12,10 +13,6 @@ type SearchMachine struct {
 	index bleve.Index
 }
 
-type BookModel struct {
-	Title string `json:"title"`
-	Olid  string `json:"olid"`
-}
 
 func NewSearchMachine(loc string) (*SearchMachine, error) {
 	index, err := bleve.Open(loc)
@@ -35,7 +32,7 @@ func NewSearchMachine(loc string) (*SearchMachine, error) {
 }
 
 // Index a book item. Wrapper around index.Index()
-func (s *SearchMachine) AddItem(b BookModel) error {
+func (s *SearchMachine) AddItem(b common.BookModel) error {
 	/*
 		NOTE: Is confusing to read, but we want the OLID from any of the fields
 		in our BookModel
@@ -67,7 +64,7 @@ func (s *SearchMachine) Refresh(D *sql.DB) error {
 		return err
 	}
 	for rows.Next() {
-		val := BookModel{}
+		val := common.BookModel{}
 		err = rows.Scan(&val.Olid, &val.Title)
 		if err != nil {
 			return err

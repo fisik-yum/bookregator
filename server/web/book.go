@@ -31,6 +31,7 @@ func BookHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Re
 		work, err := Q.GetWorkByOLID(ctx, olid)
 		if err != nil {
 			log.Println(err)
+			PageNotFoundHandler(w, r)
 			return
 		}
 		stat, err := Q.GetStats(ctx, olid)
@@ -87,6 +88,6 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	pages.NewIndex().Render(w, r)
 }
 
-func NFHandler(w http.ResponseWriter, r *http.Request) {
+func PageNotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	pages.NewNF().Render(w, r)
 }

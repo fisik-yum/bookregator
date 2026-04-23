@@ -1,13 +1,32 @@
 @font-face {
-    font-family: 'SUSE', monospace;
-    src: url('static/font/SUSE[wght].woff2') format('woff2');
+    font-family: 'SUSE';
+    src: url('../font/SUSE[wght].woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+    font-family: 'SUSE';
+    src: url('../font/SUSE-Italic[wght].woff2') format('woff2');
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'SUSE Mono';
+    src: url('../font/SUSEMono[wght].woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SUSE Mono';
+    src: url('../font/SUSEMono-Italic[wght].woff2') format('woff2');
+    font-weight: normal;
+    font-style: italic;
+}
 
 body {
-    font-family: 'SUSE', monospace;
+    font-family: 'SUSE';
     font-weight: medium;
+    font-style: normal;
 }
 
 main {
@@ -40,11 +59,6 @@ div.searchcard {
     text-align: justify;
 }
 
-div.searchcard img {
-    max-width: auto;
-    max-height: auto;
-}
-
 div.descriptioncard {
     text-align: left;
 }
@@ -57,14 +71,17 @@ span.infobadge {
     padding: 0.10em;
     overflow-wrap: balance;
     display: inline-block;
-
-    font-size: 0.65em;
+    font-family: 'Suse Mono', monospace;
     font-weight: normal;
+    font-style: normal;
+    font-size: 0.65em;
 }
 
 
 img {
     padding: 0.75em;
+    max-width: auto;
+    max-height: auto;
 }
 
 .textcomponent {

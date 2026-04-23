@@ -64,5 +64,5 @@ class Scraper():
 
     @staticmethod
     @abstractmethod
-    def getReviews(isbn: str, driver: uc.Chrome) -> list[ReviewData]:
+    async def getReviews(isbn: str, driver: uc.Chrome) -> list[ReviewData]:
         return []
