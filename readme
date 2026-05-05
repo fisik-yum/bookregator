@@ -9,3 +9,5 @@ TODO:
 - Switch database backend to PostgreSQL or MariaDB (This will involve migrating the existing databse)
 --------
 This software is published under the AGPLv3 License. This means that you must comply with all of its provisions when distributing or modifying source and binaries.
+--------
+development will primarily occur on codeberg
