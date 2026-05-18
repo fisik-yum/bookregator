@@ -1,147 +1,221 @@
+/* --- Fonts --- */
 @font-face {
-    font-family: 'SUSE';
-    src: url('../font/SUSE[wght].woff2') format('woff2');
-    font-weight: normal;
+    font-family: 'Merriweather';
+    src: url('../font/Merriweather-VariableFont_opsz,wdth,wght.ttf') format('truetype');
+    font-weight: 300 900;
     font-style: normal;
+    font-display: swap;
 }
+
 @font-face {
-    font-family: 'SUSE';
-    src: url('../font/SUSE-Italic[wght].woff2') format('woff2');
-    font-weight: normal;
+    font-family: 'Merriweather';
+    src: url('../font/Merriweather-Italic-VariableFont_opsz,wdth,wght.ttf') format('truetype');
+    font-weight: 300 900;
     font-style: italic;
+    font-display: swap;
 }
+
 @font-face {
     font-family: 'SUSE Mono';
     src: url('../font/SUSEMono[wght].woff2') format('woff2');
-    font-weight: normal;
+    font-weight: 100 900;
     font-style: normal;
+    font-display: swap;
 }
+
 @font-face {
     font-family: 'SUSE Mono';
     src: url('../font/SUSEMono-Italic[wght].woff2') format('woff2');
-    font-weight: normal;
+    font-weight: 100 900;
     font-style: italic;
+    font-display: swap;
 }
 
 body {
-    font-family: 'SUSE';
-    font-weight: medium;
-    font-style: normal;
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1em;
 }
-
-main {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-div {
-
-    margin-left: auto;
-    margin-right: auto;
-}
-
-div.reviewcard {
-    padding: 0.25em;
-    border-style: solid;
-    border-width: thin;
-    text-align: left;
-}
-
-div.bookinfobox {
-    padding: 0.25em;
-    text-align: center;
-}
-
-div.searchcard {
-    border-style: solid;
-    border-width: thin;
-    padding: 0.25em;
-    text-align: justify;
-}
-
-div.descriptioncard {
-    text-align: left;
-}
-
-
-span.infobadge {
-    border-style: solid;
-    border-width: thin;
-    margin: 0.05rem;
-    padding: 0.10em;
-    overflow-wrap: balance;
-    display: inline-block;
-    font-family: 'Suse Mono', monospace;
-    font-weight: normal;
-    font-style: normal;
-    font-size: 0.65em;
-}
-
 
 img {
-    padding: 0.75em;
-    max-width: auto;
-    max-height: auto;
+    max-width: 100%;
+    height: auto;
+    padding: 0.5em;
 }
 
-.textcomponent {
-    max-width: 80%;
-    margin-top: 1em;
-    margin-bottom: 1em;
-}
-
-.container {
-    align-items: center;
-    justify-content: center;
-    display: flex;
-}
-
-@media (max-width: 1200px) {
-    .container {
-        flex-direction: column;
-        align-items: center;
-    }
-}
-
-nav.navbar {
-    overflow: hidden;
-    position: sticky;
-    top: 0;
-    background-color: whitesmoke;
-}
-
-nav.navbar div.navbaritem {
-    float: left;
-    margin-bottom: 0.5em;
-    margin-top: 0.5em;
-}
-
-a:link {
-    color: cornflowerblue;
-}
-
-a:visited {
-    color: cornflowerblue;
-}
-
-a:hover {
-    color: cornflowerblue;
-}
-
-a:active {
+a {
     color: cornflowerblue;
 }
 
 hr {
-    max-width: 80%;
+    border: none;
+    border-top: 1px solid currentColor;
+    opacity: 0.3;
+}
+
+.site-nav {
+    position: sticky;
+    top: 0;
+    background: whitesmoke;
+    padding: 0.25em 0;
+}
+
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    align-items: center;
+}
+
+.site-title {
+    font-weight: 700;
+    margin-right: auto;
+}
+
+.book-info {
+    display: flex;
+    gap: 1em;
+    align-items: flex-start;
+    margin: 1em 0;
+}
+
+.book-figure {
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.book-cover {
+    width: 180px;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    padding: 0;
+}
+
+.book-meta {
+    flex: 1;
+}
+
+.book-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25em;
+    margin: 0.5em 0;
+}
+
+.book-description {
+    margin: 0.5em 0;
+}
+
+.desc-toggle {
+    display: none;
+}
+
+.desc-text {
+    max-height: 5em;
+    overflow: hidden;
+    margin: 0;
+}
+
+.desc-toggle:checked+.desc-text {
+    max-height: none;
+}
+
+.desc-expand {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 0.8em;
+    color: cornflowerblue;
+}
+
+.desc-expand::after {
+    content: 'Show more';
+}
+
+.desc-toggle:checked~.desc-expand::after {
+    content: 'Show less';
+}
+
+.badge {
+    display: inline-block;
+    border: 1px solid currentColor;
+    padding: 0.1em 0.3em;
+    font-family: 'SUSE Mono', monospace;
+    font-size: 0.7em;
+    white-space: nowrap;
+}
+
+.review details summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.review details summary::-webkit-details-marker {
+    display: none;
+}
+
+.review details summary h4::after {
+    content: ' [+] (click to expand)';
+    font-family: 'SUSE Mono', monospace;
+    font-size: 0.75em;
+    opacity: 0.6;
+}
+
+.review details[open] summary h4::after {
+    content: ' [−] (click to collapse)';
+}
+
+.review {
+    border: 1px solid #ccc;
+    padding: 0.5em;
+    margin: 0.75em 0;
+}
+
+.search-result {
+    border: 1px solid #ccc;
+    padding: 0.5em;
+    margin: 0.75em 0;
+}
+
+.search-result-header {
+    margin-bottom: 0.5em;
+}
+
+.search-result-body {
+    display: flex;
+    gap: 0.75em;
+    align-items: flex-start;
+}
+
+.search-result-body .book-cover {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.search-result-body p {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+}
+
+.page-content {
+    margin: 1em 0;
 }
 
 footer {
-    margin-left: auto;
-    margin-right: auto;
     text-align: center;
+    margin: 2em 0 1em;
 }
-footer a.footerlink{
-    float: left;
-    margin: 0.5em;
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1em;
 }

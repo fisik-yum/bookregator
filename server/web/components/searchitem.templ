@@ -7,10 +7,10 @@ import (
 )
 
 templ SearchItem(w db.Work, s db.Stat) {
-	<div class="searchcard card textcomponent">
-		<div class="card-header">
+	<div class="search-result">
+		<div class="search-result-header">
 			<a href={ "book?olid=" + w.Olid }>{ w.Title }</a>
-			<span class="infobadge">
+			<span class="badge">
 				if s.AvgRating<=0 {
 					No Rating
 				} else {
@@ -19,14 +19,14 @@ templ SearchItem(w db.Work, s db.Stat) {
 				| { s.ReviewCount } ratings
 			</span>
 		</div>
-		<div class="container">
+		<div class="search-result-body">
 			if w.Cover!=nil {
-				<img src={ fmt.Sprintf("https://covers.openlibrary.org/b/id/%s-M.jpg", *w.Cover) } class="figure-img img-fluid rounded border float-start" alt="book cover"/>
+				<img src={ fmt.Sprintf("https://covers.openlibrary.org/b/id/%s-M.jpg", *w.Cover) } class="book-cover" alt="book cover"/>
 			} else {
-				<img src={ "https://openlibrary.org/images/icons/avatar_book-lg.png" } class="figure-img img-fluid rounded border float-start" alt="book cover"/>
+				<img src={ "https://openlibrary.org/images/icons/avatar_book-lg.png" } class="book-cover" alt="book cover"/>
 			}
 			if w.Description!=nil {
-				<p class="card-text text-center">{ *w.Description }</p>
+				<p>{ *w.Description }</p>
 			}
 		</div>
 	</div>

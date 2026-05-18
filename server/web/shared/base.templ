@@ -13,7 +13,7 @@ func NewBase(title string) Base {
 }
 
 templ (b Base) Render(rw http.ResponseWriter, r *http.Request) {
-	b.Html().Render(r.Context(), rw) 
+	b.Html().Render(r.Context(), rw)
 }
 
 templ (b Base) Html() {
@@ -27,15 +27,15 @@ templ (b Base) Html() {
 		</head>
 		<body>
 			@components.Navbar()
-			<main class="main">
+			<main>
 				{ children... }
 			</main>
 			<footer>
 				<hr/>
-				<div class="container">
-					<a class="footerlink" href="/about">About</a>
-					<a class="footerlink" href="/">Home</a>
-					<a class="footerlink" href="/add">Add a book</a>
+				<div class="footer-links">
+					<a class="footer-link" href="/about">About</a>
+					<a class="footer-link" href="/">Home</a>
+					<a class="footer-link" href="/add">Add a book</a>
 				</div>
 			</footer>
 			<div id="toast-container"></div>

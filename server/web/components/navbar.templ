@@ -1,25 +1,17 @@
 package components
 
 templ Navbar() {
-	<nav class="navbar">
-		<div class="container">
-			<div class="navbaritem textcomponent">
+	<nav class="site-nav">
+		<div class="nav-links">
+			<div class="site-title">
 				<a>bookregator</a>
 			</div>
-			<div class="navbaritem">
-				<a class="nav-link" href="/">Home</a>
-			</div>
-			<div class="navbaritem">
-				<a class="nav-link" href="/random">Random</a>
-			</div>
-			<div class="navbaritem">
-				<a class="nav-link" href="/about">About</a>
-			</div>
-			<div class="navbaritem">
-				<form class="" method="get" action="search">
-					<input class="" name="query" id="query" type="query" placeholder="Search Me!"/>
-				</form>
-			</div>
+			<a class="nav-link" href="/">Home</a>
+			<a class="nav-link" href="/random">Random</a>
+			<a class="nav-link" href="/about">About</a>
+			<form method="get" action="search">
+				<input name="query" id="query" type="search" placeholder="Search Me!"/>
+			</form>
 		</div>
 	</nav>
 }

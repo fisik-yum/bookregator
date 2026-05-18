@@ -9,7 +9,7 @@ type NF struct {
 	shared.Base
 }
 
-func NewNF() *NF{
+func NewNF() *NF {
 	return &NF{shared.NewBase("Bookregator")}
 }
 func (i *NF) Render(w http.ResponseWriter, r *http.Request) {
@@ -18,11 +18,9 @@ func (i *NF) Render(w http.ResponseWriter, r *http.Request) {
 
 templ (i *NF) Html() {
 	@i.Base.Html() {
-		<div class="textcomponent">
-			<h1 class="display-4">bookregator</h1>
-			<p class="lead">
-            404: Page not found!
-			</p>
+		<div class="page-content">
+			<h1>bookregator</h1>
+			<p>404: Page not found!</p>
 		</div>
 	}
 }

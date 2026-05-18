@@ -5,35 +5,41 @@ import "fmt"
 import "strconv"
 
 templ BookInfoBox(w db.Work, s db.Stat) {
-	<div class="bookinfobox textcomponent container">
-		<figure class="figure">
+	<div class="book-info">
+		<figure class="book-figure">
 			if w.Cover!=nil {
-				<img src={ fmt.Sprintf("https://covers.openlibrary.org/b/id/%s-L.jpg", *w.Cover) } class="figure-img img-fluid rounded border" alt="book cover"/>
+				<img src={ fmt.Sprintf("https://covers.openlibrary.org/b/id/%s-L.jpg", *w.Cover) } class="book-cover" alt="book cover"/>
 			} else {
-				<img src={ "https://openlibrary.org/images/icons/avatar_book-lg.png" } class="figure-img img-fluid rounded border" alt="book cover"/>
+				<img src={ "https://openlibrary.org/images/icons/avatar_book-lg.png" } class="book-cover" alt="book cover"/>
 			}
-			<figcaption>
-				{ w.Title }
-			</figcaption>
-			<div class="container">
+		</figure>
+		<div class="book-meta">
+			<h2>{ w.Title }</h2>
+			<div class="book-stats">
 				@statsBadgeMean(s)
 				@statsBadgeMedian(s)
 			</div>
-		</figure>
-		if w.Description!=nil {
-			<div class="descriptioncard container">
-				{ *w.Description }
-			</div>
-		}
+			if w.Description!=nil {
+				<div class="book-description">
+					if len(*w.Description) > 300 {
+						<input type="checkbox" id="desc-toggle" class="desc-toggle"/>
+						<p class="desc-text">{ *w.Description }</p>
+						<label for="desc-toggle" class="desc-expand"></label>
+					} else {
+						<p>{ *w.Description }</p>
+					}
+				</div>
+			}
+		</div>
 	</div>
 }
 
 templ statsBadgeMean(s db.Stat) {
-	<span class="infobadge">
+	<span class="badge">
 		if s.ReviewCount<=0 || s.AvgRating<float64(0) {
 			No Ratings!
 		} else {
-			{ strconv.FormatFloat(s.AvgRating,'f',2,64) } ± 
+			{ strconv.FormatFloat(s.AvgRating,'f',2,64) } ±
 			{ strconv.FormatFloat(s.CiBound,'f',2,64) } out of 5 (95% CI)
 			| { s.ReviewCount } ratings
 		}
@@ -42,7 +48,7 @@ templ statsBadgeMean(s db.Stat) {
 
 templ statsBadgeMedian(s db.Stat) {
 	if s.ReviewCount<=0 || s.MedRating>=0 {
-		<span class="infobadge">
+		<span class="badge">
 			Median: { strconv.FormatFloat(s.MedRating,'f',2,64) }
 		</span>
 	}

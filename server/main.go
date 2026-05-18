@@ -25,7 +25,7 @@ var D *sql.DB
 var Q db.Queries
 var I *search.SearchMachine
 
-// configuration 
+// configuration
 var configLocation string // config location
 var cfg serverConfig
 
@@ -33,7 +33,7 @@ func init() {
 	flag.StringVar(&configLocation, "c", "", "location of config file")
 	flag.Parse()
 
-	err:=cleanenv.ReadConfig(configLocation,&cfg)
+	err := cleanenv.ReadConfig(configLocation, &cfg)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -58,7 +58,7 @@ func main() {
 	r.Use(middleware.CleanPath)
 
 	// manage global mux
-	r.Mount("/api", api.Router(D, Q,cfg.HTTPUser, cfg.HTTPPass))
+	r.Mount("/api", api.Router(D, Q, cfg.HTTPUser, cfg.HTTPPass))
 	r.Mount("/", web.Router(D, Q, *I))
 
 	// Bind only to localhost (127.0.0.1)
@@ -70,7 +70,7 @@ func main() {
 		}
 	}()
 
-	if !cfg.SkipIndexing{
+	if !cfg.SkipIndexing {
 		// run refresh in parallel
 		ticker := time.NewTicker(30 * time.Minute)
 		go func() {

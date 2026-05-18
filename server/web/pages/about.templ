@@ -18,20 +18,20 @@ func (i *About) Render(w http.ResponseWriter, r *http.Request) {
 
 templ (i *About) Html() {
 	@i.Base.Html() {
-		<div class="textcomponent">
-			<h1 class="display-4">bookregator</h1>
-			<p class="lead">
-				bookregator is a small side-project of mine 
-				to make discovering books more easy, without 
-				the burden of combing through ratings. The 
-				primary feature is the calculation of a 
-				confidence interval for ratings based on the 
-				ones in the database. This makes the process 
-				of discovery slightly more faster for me. A 
-				side effect is that the webpage is faster to 
-				load on e-readers and utilizes almost no 
+		<div class="page-content">
+			<h1>bookregator</h1>
+			<p>
+				bookregator is a small side-project of mine
+				to make discovering books more easy, without
+				the burden of combing through ratings. The
+				primary feature is the calculation of a
+				confidence interval for ratings based on the
+				ones in the database. This makes the process
+				of discovery slightly more faster for me. A
+				side effect is that the webpage is faster to
+				load on e-readers and utilizes almost no
 				client-side javascript for any functionality.
-				It is also designed to limit privacy concerns 
+				It is also designed to limit privacy concerns
 				and features no tracking.
 			</p>
 		</div>
