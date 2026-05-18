@@ -3,7 +3,7 @@ import requests
 import logging
 import coloredlogs
 from backend import goodreads, librarything, olshim, data
-driver = uc.Chrome(use_subprocess=False, version_main=139)
+driver = uc.Chrome(use_subprocess=False, version_main=148)
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 coloredlogs.install()
@@ -29,7 +29,7 @@ def main():
 
 def ScrapeAndPost(isbn: str,olids: set, isbns: set):
     # auth setup
-    authkeys = ("scraper", "opensesame")
+    authkeys = ("admin", "opensesame")
     # get list of scrapers
     scrapers = [goodreads.GRScraper, librarything.LTScraper]
     if isbn in isbns:
@@ -39,7 +39,7 @@ def ScrapeAndPost(isbn: str,olids: set, isbns: set):
     # get metadata, and initialize structs
     isbn, olid = olshim.ISBNtoOLIDW(isbn)
 
-    if olid not in olids:
+    if olid in olids:
         return
 
     logger.info(f"Working on (ISBN,OLID), ({isbn},{olid})")

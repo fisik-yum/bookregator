@@ -8,6 +8,13 @@ dependencies = [
     "beautifulsoup4>=4.13.4",
     "coloredlogs>=15.0.1",
     "isbnlib",
+    "openlibrary-client",
+    "playwright-stealth>=2.0.3",
+    "scrapy>=2.15.2",
+    "scrapy-playwright>=0.0.46",
     "setuptools>=80.9.0",
     "undetected-chromedriver>=3.5.5",
 ]
+
+[tool.uv.sources]
+openlibrary-client = { git = "https://github.com/internetarchive/openlibrary-client.git" }

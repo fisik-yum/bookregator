@@ -4,7 +4,8 @@ CREATE TABLE if not exists works (
     author TEXT,
     cover TEXT,
     description TEXT
-); CREATE TABLE isbns (
+);
+CREATE TABLE isbns (
     isbn TEXT PRIMARY KEY,
     olid TEXT NOT NULL REFERENCES works(olid),
     UNIQUE(isbn, olid)
@@ -36,7 +37,7 @@ CREATE TABLE if not exists genres (
     UNIQUE(genre_name)
 );
 
-CREATE TABLE bookgenres (
+CREATE TABLE if not exists bookgenres (
     olid TEXT NOT NULL REFERENCES works(olid),
     genre_id INTEGER NOT NULL REFERENCES genres(genre_id),
     UNIQUE(olid, genre_id)
@@ -44,3 +45,5 @@ CREATE TABLE bookgenres (
 
 CREATE VIEW overall_rating as
 SELECT r.olid,AVG(r.positive) FROM REVIEWS r GROUP BY r.olid;
+
+PRAGMA foreign_keys= ON;

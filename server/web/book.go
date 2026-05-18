@@ -88,6 +88,9 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	pages.NewIndex().Render(w, r)
 }
 
+func About(w http.ResponseWriter, r *http.Request) {
+	pages.NewAbout().Render(w, r)
+}
 func PageNotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	pages.NewNF().Render(w, r)
 }

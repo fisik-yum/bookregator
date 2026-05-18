@@ -111,6 +111,21 @@ func UpdateStatGlobal(D *sql.DB, Q db.Queries) http.HandlerFunc {
 }
 
 /*
+this handler simply exists for maintenance.
+we force a cleanup of dangling records
+*/
+func Prune(D *sql.DB, Q db.Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := Q.PruneDatabase(r.Context())
+		if err != nil {
+			log.Println(err.Error())
+			return
+		}
+		log.Println("Prune Successful")
+	}
+}
+
+/*
 Extract ISBN, and auto-routes it. Data is sent as JSON,
 */
 func InsertRouteHandler(D *sql.DB, Q db.Queries) http.HandlerFunc {

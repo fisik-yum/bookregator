@@ -28,6 +28,7 @@ func secureRouter(D *sql.DB, Q db.Queries, basicAuthU string, basicAuthP string)
 		r.Post("/reviewsingle", InsertReviewSingleHandler(D, Q))
 		r.Post("/reviewmultiple", InsertReviewMultipleHandler(D, Q))
 		r.Post("/refreshstats", UpdateStatGlobal(D, Q))
+		r.Post("/prune", Prune(D, Q))
 	})
 
 	return secure
