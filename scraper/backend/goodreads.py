@@ -4,7 +4,6 @@ import undetected_chromedriver as uc
 import time
 import coloredlogs
 import logging
-import zendriver as z
 from . import data
 
 logging.basicConfig(level=logging.DEBUG,
@@ -20,24 +19,26 @@ class GRScraper(data.Scraper):
         pass
 
     @staticmethod
-    async def getReviews(isbn: str, tab: z.Tab) -> list[data.ReviewData]:
+    def getReviews(isbn: str, driver: uc.Chrome) -> list[data.ReviewData]:
         ret: list[data.ReviewData] = []
         logger = logging.getLogger(__name__)
 
         logger.debug(f"Fetching details for {isbn}")
-        tab.get(GRScraper.url+isbn).throw
+        driver.get(GRScraper.url+isbn)
         # skip the GR sign-in pop-up
         time.sleep(2)
         try:
-            el= await tab.find(attrs={"class":"Button.Button--tertiary. Button--medium.Button--rounded"})
-            el.mouse_click()
+            driver.find_element(By.CLASS_NAME,
+                                "Button.Button--tertiary.\
+                                        Button--medium.Button--rounded")\
+                .click()
         except Exception:
             pass
 
-        pgsrc=await tab.get_content()
         soup = bs4.BeautifulSoup(
-            pgsrc, features="html.parser")
+            driver.page_source, features="html.parser")
         cards = soup.select(".ReviewCard")
+        # logger.debug(len(cards))
         for i in range(len(cards)):
             logger.debug(f"Working on review {i} for {isbn}")
             card = cards[i]
