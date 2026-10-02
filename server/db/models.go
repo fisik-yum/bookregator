@@ -4,6 +4,13 @@
 
 package db
 
+type BookRecommendation struct {
+	Olid        string  `json:"olid"`
+	SimilarOlid string  `json:"similar_olid"`
+	Rank        int64   `json:"rank"`
+	Score       float64 `json:"score"`
+}
+
 type Bookgenre struct {
 	Olid    string `json:"olid"`
 	GenreID int64  `json:"genre_id"`
@@ -32,6 +39,12 @@ type Review struct {
 	Username   string  `json:"username"`
 	Rating     float64 `json:"rating"`
 	Text       *string `json:"text"`
+}
+
+type ReviewSentiment struct {
+	ReviewID int64   `json:"review_id"`
+	Label    string  `json:"label"`
+	Score    float64 `json:"score"`
 }
 
 type Stat struct {

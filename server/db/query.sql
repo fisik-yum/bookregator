@@ -39,3 +39,7 @@ SELECT COUNT(*) FROM isbns WHERE isbn = ? LIMIT 1;
 
 -- name: GetGenresByOLID :many
 SELECT  genre_name FROM bookgenres INNER JOIN genres ON bookgenres.genre_id=genres.genre_id WHERE bookgenres.olid=sqlc.arg(olid)
+;
+
+-- name: GetRecommendedOLIDs :many
+SELECT similar_olid FROM book_recommendations WHERE olid = sqlc.arg(olid) ORDER BY rank LIMIT sqlc.arg(limit)

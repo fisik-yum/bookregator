@@ -40,8 +40,24 @@ func BookHandler(D *sql.DB, Q db.Queries) func(w http.ResponseWriter, r *http.Re
 			//return
 		}
 
+		recOlids, err := Q.GetRecommendedOLIDs(ctx, db.GetRecommendedOLIDsParams{
+			Olid:  olid,
+			Limit: 5,
+		})
+		if err != nil {
+			log.Println(err)
+		}
+		recWorks := make([]db.Work, 0)
+		for _, recOlid := range recOlids {
+			recWork, err := Q.GetWorkByOLID(ctx, recOlid)
+			if err != nil {
+				continue
+			}
+			recWorks = append(recWorks, recWork)
+		}
+
 		// render page
-		pages.NewReview(reviews, work, stat).Render(w, r)
+		pages.NewReview(reviews, work, stat, recWorks).Render(w, r)
 	}
 }
 

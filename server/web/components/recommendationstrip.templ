@@ -1,0 +1,18 @@
+package components
+
+import "server/db"
+
+templ RecommendationStrip(works []db.Work) {
+	<div class="similar-books-strip">
+		for _, w := range works {
+			<a href={ "book?olid=" + w.Olid } class="similar-book-item">
+				if w.Cover != nil {
+					<img src={ "https://covers.openlibrary.org/b/id/" + *w.Cover + "-M.jpg" } alt="book cover"/>
+				} else {
+					<img src="https://openlibrary.org/images/icons/avatar_book-lg.png" alt="book cover"/>
+				}
+				<span>{ w.Title }</span>
+			</a>
+		}
+	</div>
+}

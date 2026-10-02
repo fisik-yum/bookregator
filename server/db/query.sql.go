@@ -98,6 +98,40 @@ func (q *Queries) GetRandomWork(ctx context.Context) (string, error) {
 	return olid, err
 }
 
+const getRecommendedOLIDs = `-- name: GetRecommendedOLIDs :many
+;
+
+SELECT similar_olid FROM book_recommendations WHERE olid = ?1 ORDER BY rank LIMIT ?2
+`
+
+type GetRecommendedOLIDsParams struct {
+	Olid  string `json:"olid"`
+	Limit int64  `json:"limit"`
+}
+
+func (q *Queries) GetRecommendedOLIDs(ctx context.Context, arg GetRecommendedOLIDsParams) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getRecommendedOLIDs, arg.Olid, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var similar_olid string
+		if err := rows.Scan(&similar_olid); err != nil {
+			return nil, err
+		}
+		items = append(items, similar_olid)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getStats = `-- name: GetStats :one
 SELECT olid, review_count, avg_rating, med_rating, ci_bound FROM stats WHERE olid = ? LIMIT 1
 `

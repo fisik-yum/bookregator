@@ -204,6 +204,34 @@ hr {
     -webkit-line-clamp: 4;
 }
 
+.similar-books-strip {
+    display: flex;
+    gap: 0.75em;
+    overflow-x: auto;
+    padding: 0.5em 0;
+}
+
+.similar-book-item {
+    flex: 0 0 auto;
+    width: 100px;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.similar-book-item img {
+    width: 100px;
+    height: auto;
+    display: block;
+    padding: 0;
+}
+
+.similar-book-item span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .page-content {
     margin: 1em 0;
 }
