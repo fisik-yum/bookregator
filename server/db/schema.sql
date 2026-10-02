@@ -46,4 +46,18 @@ CREATE TABLE if not exists bookgenres (
 CREATE VIEW overall_rating as
 SELECT r.olid,AVG(r.positive) FROM REVIEWS r GROUP BY r.olid;
 
+CREATE TABLE if not exists review_sentiment (
+    review_id INTEGER PRIMARY KEY REFERENCES reviews(review_id),
+    label TEXT NOT NULL,
+    score REAL NOT NULL
+);
+
+CREATE TABLE if not exists book_recommendations (
+    olid TEXT NOT NULL REFERENCES works(olid),
+    similar_olid TEXT NOT NULL REFERENCES works(olid),
+    rank INTEGER NOT NULL,
+    score REAL NOT NULL,
+    UNIQUE(olid, rank)
+);
+
 PRAGMA foreign_keys= ON;
